@@ -1,0 +1,25 @@
+{
+	"name": "swaglabs-automation",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"loadLandingPageAndLogin": "ts-node tests/landingPage/loadLandingPageAndLogin.test.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"dependencies": {
+		"chai": "^6.2.2",
+		"dotenv": "^17.2.3",
+		"selenium-webdriver": "^4.39.0"
+	},
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"@types/selenium-webdriver": "^4.35.4",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.3"
+	}
+}
