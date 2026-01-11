@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { WebDriver, Builder } from "selenium-webdriver";
-import { LandingPage } from "../../pages/landingPage/landingPage";
+import { LandingPage } from "../../pages/landingPage";
 
 const loadLandingPageAndLogin = async () => {
 	let driver: WebDriver | undefined;
