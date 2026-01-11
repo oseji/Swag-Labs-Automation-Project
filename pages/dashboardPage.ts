@@ -102,6 +102,13 @@ export class DashboardPage {
 	): Promise<void> {
 		const locator = this.productMapping[product];
 		await waitAndClick(this.driver, locator, `${product} product`);
+
+		await this.driver.wait(
+			until.urlContains("https://www.saucedemo.com/inventory-item.html?id"),
+			this.timeout
+		);
+
+		console.log(`opened ${product} details page`);
 	}
 
 	async clickRemoveButtonOnProduct(
