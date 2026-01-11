@@ -1,13 +1,16 @@
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
+import { LandingPage } from "./landingPage";
 
 export class DashboardPage {
 	private driver: WebDriver;
 	private timeout: number;
+	private loadLandingPageAndLogin: LandingPage;
 
 	constructor(driver: WebDriver, timeout: number) {
 		this.driver = driver;
 		this.timeout = timeout;
+		this.loadLandingPageAndLogin = new LandingPage(this.driver, this.timeout);
 	}
 
 	dashboardLocators = {
@@ -88,7 +91,7 @@ export class DashboardPage {
 		await waitAndClick(this.driver, locator, `${option} filter`);
 	}
 
-	async clickOnProductToOpenIt(
+	async clickOnProductToViewDetails(
 		product:
 			| "sauce labs backpack"
 			| "sauce labs bike light"
@@ -99,6 +102,36 @@ export class DashboardPage {
 	): Promise<void> {
 		const locator = this.productMapping[product];
 		await waitAndClick(this.driver, locator, `${product} product`);
+	}
+
+	async clickRemoveButtonOnProduct(
+		product:
+			| "sauce labs backpack"
+			| "sauce labs bike light"
+			| "sauce labs bolt t-shirt"
+			| "sauce labs fleece jacket"
+			| "sauce labs onesie"
+			| "test all the things t-shirt red"
+	): Promise<void> {
+		const locator = By.id(`remove-${product}`);
+		await waitAndClick(this.driver, locator, ` remove button for ${product}`);
+	}
+
+	async clickAddToCartButtonOnProduct(
+		product:
+			| "sauce labs backpack"
+			| "sauce labs bike light"
+			| "sauce labs bolt t-shirt"
+			| "sauce labs fleece jacket"
+			| "sauce labs onesie"
+			| "test all the things t-shirt red"
+	): Promise<void> {
+		const locator = By.id(`add-to-cart-${product}`);
+		await waitAndClick(
+			this.driver,
+			locator,
+			` add to cart button for ${product}`
+		);
 	}
 
 	async clickToOpenSocialMedia(
