@@ -25,7 +25,7 @@ export class DashboardPage {
 		sauceLabsFleeceJacket: By.xpath("//div[text()='Sauce Labs Fleece Jacket']"),
 		sauceLabsOnsie: By.xpath("//div[text()='Sauce Labs Onesie']"),
 		sauceLabsTestAllThingsShirt: By.xpath(
-			"//div[text()='Test.allTheThings() T-Shirt (Red)']"
+			"//div[text()='Test.allTheThings() T-Shirt (Red)']",
 		),
 	};
 
@@ -61,14 +61,14 @@ export class DashboardPage {
 	async confirmUserIsOnDashboard(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs(process.env.DASHBOARD_URL!),
-			this.timeout
+			this.timeout,
 		);
 
 		//wait to locate products filter on the dashboard to confirm url has fully loaded
 		await waitForElement(
 			this.driver,
 			this.dashboardLocators.productFilter,
-			"products filter"
+			"products filter",
 		);
 	}
 
@@ -76,7 +76,7 @@ export class DashboardPage {
 		await waitAndClick(
 			this.driver,
 			this.dashboardLocators.productFilter,
-			"product filter"
+			"product filter",
 		);
 	}
 
@@ -85,7 +85,7 @@ export class DashboardPage {
 			| "sort price low to high"
 			| "sort price high to low"
 			| "sort names from a to z"
-			| "sort names from z to a"
+			| "sort names from z to a",
 	): Promise<void> {
 		const locator = this.filterMapping[option];
 		await waitAndClick(this.driver, locator, `${option} filter`);
@@ -98,14 +98,14 @@ export class DashboardPage {
 			| "sauce labs bolt t-shirt"
 			| "sauce labs fleece jacket"
 			| "sauce labs onesie"
-			| "test all the things t-shirt red"
+			| "test all the things t-shirt red",
 	): Promise<void> {
 		const locator = this.productMapping[product];
 		await waitAndClick(this.driver, locator, `${product} product`);
 
 		await this.driver.wait(
 			until.urlContains("https://www.saucedemo.com/inventory-item.html?id"),
-			this.timeout
+			this.timeout,
 		);
 
 		console.log(`opened ${product} details page`);
@@ -118,7 +118,7 @@ export class DashboardPage {
 			| "sauce labs bolt t-shirt"
 			| "sauce labs fleece jacket"
 			| "sauce labs onesie"
-			| "test all the things t-shirt red"
+			| "test all the things t-shirt red",
 	): Promise<void> {
 		const locator = By.id(`remove-${product}`);
 		await waitAndClick(this.driver, locator, ` remove button for ${product}`);
@@ -131,18 +131,18 @@ export class DashboardPage {
 			| "sauce labs bolt t-shirt"
 			| "sauce labs fleece jacket"
 			| "sauce labs onesie"
-			| "test all the things t-shirt red"
+			| "test all the things t-shirt red",
 	): Promise<void> {
 		const locator = By.id(`add-to-cart-${product}`);
 		await waitAndClick(
 			this.driver,
 			locator,
-			` add to cart button for ${product}`
+			` add to cart button for ${product}`,
 		);
 	}
 
 	async clickToOpenSocialMedia(
-		platform: "twitter" | "facebook" | "linkedIn"
+		platform: "twitter" | "facebook" | "linkedIn",
 	): Promise<void> {
 		const locator = this.socialMediaMapping[platform];
 		await waitAndClick(this.driver, locator, `${platform} icon`);
