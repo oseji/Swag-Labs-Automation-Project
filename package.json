@@ -6,7 +6,11 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"loadLandingPageAndLogin": "ts-node tests/landingPage/loadLandingPageAndLogin.test.ts",
-		"openProductDetailsPage": "ts-node tests/dashboard/openProductDetailsPage.test.ts"
+		"loginWithBlankUsernameField": "ts-node tests/landingPage/loginWithBlankUsernameField.test.ts",
+		"loginWithWrongCredentials": "ts-node tests/landingPage/loginWithWrongCredentials.test.ts",
+		"openProductDetailsPage": "ts-node tests/dashboard/openProductDetailsPage.test.ts",
+		"addProductToCart": "ts-node tests/dashboard/addProductToCart.test.ts",
+		"addToCartAndCheckout": "ts-node tests/dashboard/addToCartAndCheckout.test.ts"
 	},
 	"keywords": [],
 	"author": "",

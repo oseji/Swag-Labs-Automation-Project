@@ -18,6 +18,12 @@ export class LandingPage {
 		usernameInputField: By.id(`user-name`),
 		passwordInputField: By.id(`password`),
 		loginButton: By.id(`login-button`),
+		noUserNameErrorMessage: By.xpath(
+			`//h3[normalize-space()="Epic sadface: Username is required"]`,
+		),
+		negativePathErrorMessage: By.xpath(
+			`//h3[normalize-space()="Epic sadface: Username and password do not match any user in this service"]`,
+		),
 		productFilter: By.className("product_sort_container"),
 	};
 
@@ -27,7 +33,7 @@ export class LandingPage {
 		await waitForElement(
 			this.driver,
 			this.locators.loginButton,
-			`login button`
+			`login button`,
 		);
 	}
 
@@ -36,7 +42,7 @@ export class LandingPage {
 			this.driver,
 			this.locators.usernameInputField,
 			username,
-			"username input"
+			"username input",
 		);
 	}
 
@@ -45,7 +51,7 @@ export class LandingPage {
 			this.driver,
 			this.locators.passwordInputField,
 			password,
-			"password input"
+			"password input",
 		);
 	}
 
@@ -53,28 +59,48 @@ export class LandingPage {
 		await waitAndClick(this.driver, this.locators.loginButton, "login button");
 	}
 
+	async waitForNoUsernameErrorMessage(): Promise<void> {
+		await waitForElement(
+			this.driver,
+			this.locators.noUserNameErrorMessage,
+			"no username error message",
+		);
+
+		await this.driver.sleep(2000);
+	}
+
+	async waitForNegativePathErrorMessage(): Promise<void> {
+		await waitForElement(
+			this.driver,
+			this.locators.negativePathErrorMessage,
+			"negative path error message",
+		);
+
+		await this.driver.sleep(2000);
+	}
+
 	async waitForDashboardToLoad(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs(process.env.DASHBOARD_URL!),
-			this.timeout
+			this.timeout,
 		);
 
 		//wait to locate products label on the dashboard to confirm url has fully loaded
 		await waitForElement(
 			this.driver,
 			this.locators.productFilter,
-			"products label"
+			"products label",
 		);
 	}
 
 	async waitForLandingPageAndLogin(
 		username: string,
-		password: string
+		password: string,
 	): Promise<void> {
 		await this.openLandingPageAndWaitForItToLoad();
 		await this.inputUserName(username);
 		await this.inputPassword(password);
 		await this.clickLoginButton();
-		await this.waitForDashboardToLoad();
+		// await this.waitForDashboardToLoad();
 	}
 }

@@ -58,6 +58,10 @@ export class DashboardPage {
 		linkedIn: this.footerLocators.linkedinIcon,
 	};
 
+	private formatProductName(product: string): string {
+		return product.trim().toLowerCase().replace(/\s+/g, "-");
+	}
+
 	async confirmUserIsOnDashboard(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs(process.env.DASHBOARD_URL!),
@@ -133,12 +137,16 @@ export class DashboardPage {
 			| "sauce labs onesie"
 			| "test all the things t-shirt red",
 	): Promise<void> {
-		const locator = By.id(`add-to-cart-${product}`);
+		const formattedProduct = this.formatProductName(product);
+		const locator = By.id(`add-to-cart-${formattedProduct}`);
+
 		await waitAndClick(
 			this.driver,
 			locator,
 			` add to cart button for ${product}`,
 		);
+
+		await this.driver.sleep(3000);
 	}
 
 	async clickToOpenSocialMedia(

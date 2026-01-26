@@ -11,7 +11,7 @@ export class NavigationBarPage {
 	}
 
 	locators = {
-		cartButton: By.id("shopping_cart_container"),
+		cartButton: By.css('[data-test="shopping-cart-link"]'),
 		menuButton: By.id("react-burger-menu-btn"),
 		closeMenuButton: By.id("react-burger-cross-btn"),
 		allItemsButton: By.id("inventory_sidebar_link"),
@@ -21,10 +21,12 @@ export class NavigationBarPage {
 	};
 
 	async openCart(): Promise<void> {
+		await this.driver.sleep(1000);
+
 		await waitAndClick(
 			this.driver,
 			this.locators.cartButton,
-			" cart icon and opened cart page"
+			" cart icon and opened cart page",
 		);
 	}
 
@@ -36,7 +38,7 @@ export class NavigationBarPage {
 		await waitAndClick(
 			this.driver,
 			this.locators.closeMenuButton,
-			"close menu button"
+			"close menu button",
 		);
 	}
 
@@ -44,7 +46,7 @@ export class NavigationBarPage {
 		await waitAndClick(
 			this.driver,
 			this.locators.allItemsButton,
-			"all items button on the menu"
+			"all items button on the menu",
 		);
 	}
 
@@ -52,7 +54,7 @@ export class NavigationBarPage {
 		await waitAndClick(
 			this.driver,
 			this.locators.aboutButton,
-			"about button on the menu"
+			"about button on the menu",
 		);
 	}
 
@@ -60,7 +62,7 @@ export class NavigationBarPage {
 		await waitAndClick(
 			this.driver,
 			this.locators.logoutButton,
-			"logout button on the menu"
+			"logout button on the menu",
 		);
 	}
 
@@ -68,7 +70,7 @@ export class NavigationBarPage {
 		await waitAndClick(
 			this.driver,
 			this.locators.resetAppStateButton,
-			"reset app state button on the menu"
+			"reset app state button on the menu",
 		);
 	}
 }

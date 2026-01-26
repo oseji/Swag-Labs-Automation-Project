@@ -19,7 +19,9 @@ export class checkoutPage {
 	};
 
 	checkoutPageStepOneLocators = {
-		checkoutStepOneHeading: By.xpath("//span[text()='Checkout: Overview]"),
+		checkoutStepOneHeading: By.xpath(
+			"//span[text()='Checkout: Your Information']",
+		),
 		firstNameInput: By.id("first-name"),
 		lastNameInput: By.id("last-name"),
 		postalCodeInput: By.id("postal-code"),
@@ -56,6 +58,7 @@ export class checkoutPage {
 	async waitForCheckoutStepOneToLoad(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs("https://www.saucedemo.com/checkout-step-one.html"),
+			this.timeout,
 		);
 
 		await waitForElement(
@@ -112,6 +115,7 @@ export class checkoutPage {
 	async waitForCheckoutStepTwoToLoad(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs("https://www.saucedemo.com/checkout-step-two.html"),
+			this.timeout,
 		);
 
 		await waitForElement(
@@ -133,11 +137,12 @@ export class checkoutPage {
 	async waitForCheckoutCompletePageToLoad(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs("https://www.saucedemo.com/checkout-complete.html"),
+			this.timeout,
 		);
 
 		await waitForElement(
 			this.driver,
-			this.checkoutPageStepTwoLocators.checkoutStepTwoHeading,
+			this.checkoutCompleteLocators.checkoutComletePageHeading,
 			"check out page heading",
 		);
 
@@ -154,5 +159,26 @@ export class checkoutPage {
 			this.checkoutCompleteLocators.backHomeButton,
 			" back to home button",
 		);
+	}
+
+	async completeCheckOutSteps(
+		firstName: string,
+		lastName: string,
+		postalCode: string,
+	): Promise<void> {
+		//step 1
+		await this.waitForCheckoutStepOneToLoad();
+		await this.inputFirstName(firstName);
+		await this.inputLastName(lastName);
+		await this.inputPostalCode(postalCode);
+		await this.clickContinueButton();
+
+		//step 2
+		await this.waitForCheckoutStepTwoToLoad();
+		await this.clickFinishButton();
+
+		//checkout completion validation
+		await this.waitForCheckoutCompletePageToLoad();
+		await this.clickBackToHomeButton();
 	}
 }
