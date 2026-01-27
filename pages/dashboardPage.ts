@@ -35,6 +35,22 @@ export class DashboardPage {
 		linkedinIcon: By.className("social_linkedin"),
 	};
 
+	productDetailsPageLocators = {
+		backToProductsButton: By.id("back-to-products"),
+		sauceLabsBackpackTitle: By.xpath("//div[text()='Sauce Labs Backpack']"),
+		sauceLabsBikeLightTitle: By.xpath("//div[text()='Sauce Labs Bike Light']"),
+		sauceLabsBoltTshirtTitle: By.xpath(
+			"//div[text()='Sauce Labs Bolt T-Shirt']",
+		),
+		sauceLabsFleeceJacketTitle: By.xpath(
+			"//div[text()='Sauce Labs Fleece Jacket']",
+		),
+		sauceLabsOnsieTitle: By.xpath("//div[text()='Sauce Labs Onesie']"),
+		sauceLabsTestAllThingsShirtTitle: By.xpath(
+			"//div[text()='Test.allTheThings() T-Shirt (Red)']",
+		),
+	};
+
 	private filterMapping = {
 		"sort price low to high": this.dashboardLocators.priceLowToHighFilter,
 		"sort price high to low": this.dashboardLocators.priceHighToLowFilter,
@@ -50,6 +66,20 @@ export class DashboardPage {
 		"sauce labs onesie": this.dashboardLocators.sauceLabsOnsie,
 		"test all the things t-shirt red":
 			this.dashboardLocators.sauceLabsTestAllThingsShirt,
+	};
+
+	private productDetailsLocatorsMapping = {
+		"sauce labs backpack":
+			this.productDetailsPageLocators.sauceLabsBackpackTitle,
+		"sauce labs bike light":
+			this.productDetailsPageLocators.sauceLabsBikeLightTitle,
+		"sauce labs bolt t-shirt":
+			this.productDetailsPageLocators.sauceLabsBoltTshirtTitle,
+		"sauce labs fleece jacket":
+			this.productDetailsPageLocators.sauceLabsFleeceJacketTitle,
+		"sauce labs onesie": this.productDetailsPageLocators.sauceLabsOnsieTitle,
+		"test all the things t-shirt red":
+			this.productDetailsPageLocators.sauceLabsTestAllThingsShirtTitle,
 	};
 
 	private socialMediaMapping = {
@@ -104,8 +134,8 @@ export class DashboardPage {
 			| "sauce labs onesie"
 			| "test all the things t-shirt red",
 	): Promise<void> {
-		const locator = this.productMapping[product];
-		await waitAndClick(this.driver, locator, `${product} product`);
+		const productLocator = this.productMapping[product];
+		await waitAndClick(this.driver, productLocator, `${product} product`);
 
 		await this.driver.wait(
 			until.urlContains("https://www.saucedemo.com/inventory-item.html?id"),
@@ -113,6 +143,14 @@ export class DashboardPage {
 		);
 
 		console.log(`opened ${product} details page`);
+
+		//verify correct product details page is opened
+		const productTitleLocator = this.productDetailsLocatorsMapping[product];
+		await waitForElement(
+			this.driver,
+			productTitleLocator,
+			`${product} title on product details page`,
+		);
 	}
 
 	async clickRemoveButtonOnProduct(

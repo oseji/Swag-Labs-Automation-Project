@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { WebDriver, Builder } from "selenium-webdriver";
-import { LandingPage } from "../../pages/landingPage";
-import { DashboardPage } from "../../pages/dashboardPage";
+import { LandingPage } from "../../../pages/landingPage";
+import { DashboardPage } from "../../../pages/dashboardPage";
 
 const openProductDetailsPage = async () => {
 	let driver: WebDriver | undefined;
