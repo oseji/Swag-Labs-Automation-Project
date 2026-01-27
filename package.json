@@ -10,7 +10,11 @@
 		"loginWithWrongCredentials": "ts-node tests/landingPage/loginWithWrongCredentials.test.ts",
 		"openProductDetailsPage": "ts-node tests/dashboard/openProductDetailsPage.test.ts",
 		"addProductToCart": "ts-node tests/dashboard/addProductToCart.test.ts",
-		"addToCartAndCheckout": "ts-node tests/dashboard/addToCartAndCheckout.test.ts"
+		"addToCartAndCheckout": "ts-node tests/dashboard/addToCartAndCheckout.test.ts",
+		"sortProductsByAToZ": "ts-node tests/dashboard/product-sorting/sortProductsByAToZ.test.ts",
+		"sortProductsByZToA": "ts-node tests/dashboard/product-sorting/sortProductsByZToA.test.ts",
+		"sortProductsByLowToHigh": "ts-node tests/dashboard/product-sorting/sortProductsByLowToHigh.test.ts",
+		"sortProductsByHighToLow": "ts-node tests/dashboard/product-sorting/sortProductsByHighToLow.test.ts"
 	},
 	"keywords": [],
 	"author": "",
