@@ -52,7 +52,6 @@ export const sortProducts = async (
 		throw error;
 	} finally {
 		if (driver) {
-			await driver.sleep(30000);
 			await driver.quit();
 		}
 	}
