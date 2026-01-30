@@ -14,7 +14,8 @@
 		"sortProductsByAToZ": "ts-node tests/dashboard/product-sorting/sortProductsByAToZ.test.ts",
 		"sortProductsByZToA": "ts-node tests/dashboard/product-sorting/sortProductsByZToA.test.ts",
 		"sortProductsByLowToHigh": "ts-node tests/dashboard/product-sorting/sortProductsByLowToHigh.test.ts",
-		"sortProductsByHighToLow": "ts-node tests/dashboard/product-sorting/sortProductsByHighToLow.test.ts"
+		"sortProductsByHighToLow": "ts-node tests/dashboard/product-sorting/sortProductsByHighToLow.test.ts",
+		"openMenuAndVerifyContent": "ts-node tests/dashboard/menu/openMenuAndVerifyContent.test.ts"
 	},
 	"keywords": [],
 	"author": "",

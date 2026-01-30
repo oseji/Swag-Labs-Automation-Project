@@ -22,11 +22,10 @@ export class NavigationBarPage {
 
 	async openCart(): Promise<void> {
 		await this.driver.sleep(1000);
-
 		await waitAndClick(
 			this.driver,
 			this.locators.cartButton,
-			" cart icon and opened cart page",
+			"cart icon and opened cart page",
 		);
 	}
 
@@ -35,6 +34,8 @@ export class NavigationBarPage {
 	}
 
 	async closeSideMenu(): Promise<void> {
+		await this.driver.sleep(1000);
+
 		await waitAndClick(
 			this.driver,
 			this.locators.closeMenuButton,
@@ -56,6 +57,9 @@ export class NavigationBarPage {
 			this.locators.aboutButton,
 			"about button on the menu",
 		);
+
+		await this.driver.wait(until.urlIs("https://saucelabs.com/"), this.timeout);
+		console.log("opened about page");
 	}
 
 	async clickOnLogoutMenuButton(): Promise<void> {
@@ -64,6 +68,12 @@ export class NavigationBarPage {
 			this.locators.logoutButton,
 			"logout button on the menu",
 		);
+
+		await this.driver.wait(
+			until.urlIs("https://www.saucedemo.com/"),
+			this.timeout,
+		);
+		console.log("successfully logged out");
 	}
 
 	async clickResetAppStateMenuButton(): Promise<void> {
@@ -76,5 +86,27 @@ export class NavigationBarPage {
 
 	async openMenuAndVerifyContent(): Promise<void> {
 		await this.openSideMenu();
+		await waitForElement(
+			this.driver,
+			this.locators.allItemsButton,
+			"all items button on the menu",
+		);
+		await waitForElement(
+			this.driver,
+			this.locators.aboutButton,
+			"about button on the menu",
+		);
+		await waitForElement(
+			this.driver,
+			this.locators.logoutButton,
+			"logout button on the menu",
+		);
+		await waitForElement(
+			this.driver,
+			this.locators.resetAppStateButton,
+			"reset app state button on the menu",
+		);
+		await this.closeSideMenu();
+		console.log("completed opening menu and verifying content");
 	}
 }

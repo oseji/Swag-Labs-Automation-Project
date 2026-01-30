@@ -20,9 +20,9 @@ export const openMenuAndVerifyContent = async () => {
 		);
 		await landingPageData.waitForDashboardToLoad();
 
-		await navigationBarPageData.openSideMenu();
+		await navigationBarPageData.openMenuAndVerifyContent();
 
-		// console.log("completed sorting products by ");
+		console.log("completed opening menu and verifying content test");
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -32,3 +32,5 @@ export const openMenuAndVerifyContent = async () => {
 		}
 	}
 };
+
+openMenuAndVerifyContent();
