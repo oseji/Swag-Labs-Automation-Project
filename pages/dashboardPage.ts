@@ -106,6 +106,33 @@ export class DashboardPage {
 		);
 	}
 
+	async getAllProductsData(): Promise<{ name: string; price: number }[]> {
+		// locate all product container divs
+		const productContainers = await this.driver.findElements(
+			By.xpath("//div[@data-test='inventory-item']"),
+		);
+
+		const products = [];
+
+		for (const container of productContainers) {
+			const nameElement = await container.findElement(
+				By.xpath(".//*[@data-test='inventory-item-name']"),
+			);
+			const priceElement = await container.findElement(
+				By.xpath(".//*[@data-test='inventory-item-price']"),
+			);
+
+			const name = await nameElement.getText();
+			const priceText = await priceElement.getText();
+
+			const price = parseFloat(priceText.replace("$", ""));
+
+			products.push({ name, price });
+		}
+
+		return products;
+	}
+
 	async clickProductFilter(): Promise<void> {
 		await waitAndClick(
 			this.driver,

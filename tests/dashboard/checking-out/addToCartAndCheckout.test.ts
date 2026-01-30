@@ -2,11 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { WebDriver, Builder } from "selenium-webdriver";
-import { LandingPage } from "../../pages/landingPage";
-import { DashboardPage } from "../../pages/dashboardPage";
-import { NavigationBarPage } from "../../pages/navigationBarPage";
-import { cartPage } from "../../pages/cartPage";
-import { checkoutPage } from "../../pages/checkoutPage";
+import { LandingPage } from "../../../pages/landingPage";
+import { DashboardPage } from "../../../pages/dashboardPage";
+import { NavigationBarPage } from "../../../pages/navigationBarPage";
+import { cartPage } from "../../../pages/cartPage";
+import { checkoutPage } from "../../../pages/checkoutPage";
 
 const addToCartAndCheckout = async () => {
 	let driver: WebDriver | undefined;

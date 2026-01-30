@@ -73,4 +73,8 @@ export class NavigationBarPage {
 			"reset app state button on the menu",
 		);
 	}
+
+	async openMenuAndVerifyContent(): Promise<void> {
+		await this.openSideMenu();
+	}
 }
