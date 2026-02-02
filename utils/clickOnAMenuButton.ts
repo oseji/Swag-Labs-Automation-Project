@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config();
+import { createDriverAndLogin } from "./createDriverAndLogin";
 
 import { WebDriver, Builder, until } from "selenium-webdriver";
 import { NavigationBarPage } from "../pages/navigationBarPage";
@@ -12,15 +11,11 @@ export const clickOnAMenuButton = async (
 	const timeout = parseInt(process.env.TIMEOUT! || "20000");
 
 	try {
-		driver = await new Builder().forBrowser("chrome").build();
-		const landingPageData = new LandingPage(driver, timeout);
-		const navigationBarPageData = new NavigationBarPage(driver, timeout);
-
-		await landingPageData.waitForLandingPageAndLogin(
+		driver = await createDriverAndLogin(
 			process.env.USER_NAME!,
 			process.env.PASSWORD!,
 		);
-		await landingPageData.waitForDashboardToLoad();
+		const navigationBarPageData = new NavigationBarPage(driver, timeout);
 
 		await navigationBarPageData.openSideMenu();
 

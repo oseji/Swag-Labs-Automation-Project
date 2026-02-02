@@ -1,23 +1,18 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import { WebDriver, Builder } from "selenium-webdriver";
-import { LandingPage } from "../../../pages/landingPage";
+import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
+import { WebDriver } from "selenium-webdriver";
 
 const addProductToCart = async () => {
 	let driver: WebDriver | undefined;
 	const timeout = parseInt(process.env.TIMEOUT!);
 
 	try {
-		driver = await new Builder().forBrowser("chrome").build();
-		const landingPageData = new LandingPage(driver, timeout);
-		const dashboardPageData = new DashboardPage(driver, timeout);
-
-		await landingPageData.waitForLandingPageAndLogin(
+		driver = await createDriverAndLogin(
 			process.env.USER_NAME!,
 			process.env.PASSWORD!,
 		);
+
+		const dashboardPageData = new DashboardPage(driver, timeout);
 
 		await dashboardPageData.clickAddToCartButtonOnProduct(
 			"sauce labs backpack",

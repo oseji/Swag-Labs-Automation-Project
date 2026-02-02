@@ -1,34 +1,27 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import { WebDriver, Builder } from "selenium-webdriver";
-import { LandingPage } from "../../../pages/landingPage";
+import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { cartPage } from "../../../pages/cartPage";
 import { checkoutPage } from "../../../pages/checkoutPage";
+import { WebDriver } from "selenium-webdriver";
 
 const addToCartAndCheckout = async () => {
 	let driver: WebDriver | undefined;
 	const timeout = parseInt(process.env.TIMEOUT!);
 
 	try {
-		driver = await new Builder().forBrowser("chrome").build();
-		const landingPageData = new LandingPage(driver, timeout);
+		driver = await createDriverAndLogin(
+			process.env.USER_NAME!,
+			process.env.PASSWORD!,
+		);
 		const dashboardPageData = new DashboardPage(driver, timeout);
 		const navigationPageData = new NavigationBarPage(driver, timeout);
 		const cartPageData = new cartPage(driver, timeout);
 		const checkoutPageData = new checkoutPage(driver, timeout);
 
-		await landingPageData.waitForLandingPageAndLogin(
-			process.env.USER_NAME!,
-			process.env.PASSWORD!,
-		);
-
 		await dashboardPageData.clickAddToCartButtonOnProduct(
 			"sauce labs backpack",
 		);
-
 		await navigationPageData.openCart();
 		await cartPageData.clickCheckoutButton();
 		await checkoutPageData.completeCheckOutSteps("ose", "oziegbe", "0701995");

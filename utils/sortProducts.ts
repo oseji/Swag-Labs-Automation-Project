@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config();
+import { createDriverAndLogin } from "./createDriverAndLogin";
 
 import { WebDriver, Builder } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
@@ -12,15 +11,11 @@ export const sortProducts = async (
 	const timeout = parseInt(process.env.TIMEOUT! || "20000");
 
 	try {
-		driver = await new Builder().forBrowser("chrome").build();
-		const landingPageData = new LandingPage(driver, timeout);
-		const dashboardPageData = new DashboardPage(driver, timeout);
-
-		await landingPageData.waitForLandingPageAndLogin(
+		driver = await createDriverAndLogin(
 			process.env.USER_NAME!,
 			process.env.PASSWORD!,
 		);
-		await landingPageData.waitForDashboardToLoad();
+		const dashboardPageData = new DashboardPage(driver, timeout);
 
 		if (sortType === "a to z") {
 			await dashboardPageData.selectAProductFilterOption(
@@ -51,8 +46,7 @@ export const sortProducts = async (
 		console.log(error);
 		throw error;
 	} finally {
-		if (driver) {
-			await driver.quit();
-		}
+		console.log(`completed filter products by ${sortType} test`);
+		if (driver) await driver.quit();
 	}
 };
