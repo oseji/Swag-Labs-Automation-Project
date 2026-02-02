@@ -15,7 +15,10 @@
 		"sortProductsByZToA": "ts-node tests/dashboard/product-sorting/sortProductsByZToA.test.ts",
 		"sortProductsByLowToHigh": "ts-node tests/dashboard/product-sorting/sortProductsByLowToHigh.test.ts",
 		"sortProductsByHighToLow": "ts-node tests/dashboard/product-sorting/sortProductsByHighToLow.test.ts",
-		"openMenuAndVerifyContent": "ts-node tests/dashboard/menu/openMenuAndVerifyContent.test.ts"
+		"menuVisibilityAndContent": "ts-node tests/dashboard/menu/menuVisibilityAndContent.test.ts",
+		"logoutSessionValidation": "ts-node tests/dashboard/menu/logoutSessionValidation.test.ts",
+		"resetAppStateValidation": "ts-node tests/dashboard/menu/resetAppStateValidation.test.ts",
+		"goToAboutPage": "ts-node tests/dashboard/menu/goToAboutPage.test.ts"
 	},
 	"keywords": [],
 	"author": "",

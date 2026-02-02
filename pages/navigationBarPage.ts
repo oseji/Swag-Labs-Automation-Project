@@ -31,6 +31,8 @@ export class NavigationBarPage {
 
 	async openSideMenu(): Promise<void> {
 		await waitAndClick(this.driver, this.locators.menuButton, "menu button");
+
+		await this.driver.sleep(1000);
 	}
 
 	async closeSideMenu(): Promise<void> {
@@ -86,6 +88,7 @@ export class NavigationBarPage {
 
 	async openMenuAndVerifyContent(): Promise<void> {
 		await this.openSideMenu();
+
 		await waitForElement(
 			this.driver,
 			this.locators.allItemsButton,
@@ -107,6 +110,7 @@ export class NavigationBarPage {
 			"reset app state button on the menu",
 		);
 		await this.closeSideMenu();
+
 		console.log("completed opening menu and verifying content");
 	}
 }

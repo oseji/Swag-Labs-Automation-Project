@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { WebDriver, Builder } from "selenium-webdriver";
+import { WebDriver, Builder, until } from "selenium-webdriver";
 import { NavigationBarPage } from "../pages/navigationBarPage";
 import { LandingPage } from "../pages/landingPage";
 
@@ -33,10 +33,18 @@ export const clickOnAMenuButton = async (
 		}
 		if (buttonName === "logout") {
 			await navigationBarPageData.clickOnLogoutMenuButton();
+
+			//verify that we are back on the landing page
+			await driver.wait(until.urlIs(process.env.LANDING_PAGE_URL!), timeout);
+
+			//verify that clicking back does not go back to the dashboard
+			await driver.navigate().back();
+			await driver.wait(until.urlIs(process.env.LANDING_PAGE_URL!), timeout);
 		}
 		if (buttonName === "reset app state") {
 			await navigationBarPageData.clickResetAppStateMenuButton();
 		}
+
 		console.log(
 			`completed clicking on ${buttonName.toLocaleUpperCase()} menu button test`,
 		);

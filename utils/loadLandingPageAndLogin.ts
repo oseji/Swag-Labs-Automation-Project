@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { Options } from "selenium-webdriver/chrome";
 
 import { WebDriver, Builder } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
@@ -11,9 +12,18 @@ export const loadLandingPageAndLogin = async (
 ) => {
 	let driver: WebDriver | undefined;
 	const timeout = parseInt(process.env.TIMEOUT! || "20000");
+	const chromeOptions = new Options();
+
+	chromeOptions.setUserPreferences({
+		credentials_enable_service: false,
+		"profile.password_manager_enabled": false,
+	});
 
 	try {
-		driver = await new Builder().forBrowser("chrome").build();
+		driver = await new Builder()
+			.forBrowser("chrome")
+			.setChromeOptions(chromeOptions)
+			.build();
 		const landingPageData = new LandingPage(driver, timeout);
 
 		if (testType === "happy path") {
@@ -39,7 +49,8 @@ export const loadLandingPageAndLogin = async (
 			console.log(`completed no username test for load landing page and login`);
 		}
 	} catch (error) {
-		console.error(error);
+		console.error(`Test failed: ${error}`);
+		throw error;
 	} finally {
 		if (driver) await driver.quit();
 	}
