@@ -128,6 +128,60 @@ export class checkoutPage {
 		);
 	}
 
+	private itemPricesLocator = By.css('[data-test="inventory-item-price"]');
+	private subtotalLabel = By.css('[data-test="subtotal-label"]');
+	private taxLabel = By.css('[data-test="tax-label"]');
+	private totalLabel = By.css('[data-test="total-label"]');
+
+	async calculateAndVerifyPricesDisplayed(): Promise<void> {
+		const priceOfElements = await this.driver.findElements(
+			this.itemPricesLocator,
+		);
+
+		let calculatedItemTotal = 0;
+		for (const priceElement of priceOfElements) {
+			const priceText = await priceElement.getText();
+			const priceValue = parseFloat(priceText.replace("$", ""));
+			calculatedItemTotal += priceValue;
+		}
+
+		// round the sum to 2 decimal places to prevent floating point issues
+		calculatedItemTotal = Math.round(calculatedItemTotal * 100) / 100;
+
+		// get UI values
+		const subtotalText = await this.driver
+			.findElement(By.css('[data-test="subtotal-label"]'))
+			.getText();
+		const subtotalValue = parseFloat(subtotalText.replace(/[^0-9.]/g, ""));
+
+		const taxText = await this.driver
+			.findElement(By.css('[data-test="tax-label"]'))
+			.getText();
+		const taxValue = parseFloat(taxText.replace(/[^0-9.]/g, ""));
+
+		const totalText = await this.driver
+			.findElement(By.css('[data-test="total-label"]'))
+			.getText();
+		const totalValue = parseFloat(totalText.replace(/[^0-9.]/g, ""));
+
+		//verify sum of items equals the displayed subtotal
+		if (calculatedItemTotal !== subtotalValue) {
+			throw new Error(
+				`Subtotal Mismatch: Calculated sum of items is ${calculatedItemTotal}, but UI shows ${subtotalValue}`,
+			);
+		}
+
+		// verify subtotal + tax equals the displayed total
+		const expectedTotal = Math.round((subtotalValue + taxValue) * 100) / 100;
+		if (totalValue !== expectedTotal) {
+			throw new Error(
+				`Grand Total Mismatch: ${subtotalValue} + ${taxValue} should be ${expectedTotal}, but UI shows ${totalValue}`,
+			);
+		}
+
+		console.log("Price verification successful!");
+	}
+
 	async clickFinishButton(): Promise<void> {
 		await waitAndClick(
 			this.driver,
