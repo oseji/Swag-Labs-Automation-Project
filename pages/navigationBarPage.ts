@@ -12,6 +12,7 @@ export class NavigationBarPage {
 
 	locators = {
 		cartButton: By.css('[data-test="shopping-cart-link"]'),
+		cartBadge: By.css('[data-test="shopping-cart-badge"]'),
 		menuButton: By.id("react-burger-menu-btn"),
 		closeMenuButton: By.id("react-burger-cross-btn"),
 		allItemsButton: By.id("inventory_sidebar_link"),
@@ -22,11 +23,31 @@ export class NavigationBarPage {
 
 	async openCart(): Promise<void> {
 		await this.driver.sleep(1000);
+
 		await waitAndClick(
 			this.driver,
 			this.locators.cartButton,
 			"cart icon and opened cart page",
 		);
+	}
+
+	async verifyCartBadgeCount(expectedCount: number): Promise<void> {
+		const badgeElement = await waitForElement(
+			this.driver,
+			this.locators.cartBadge,
+			"cart badge",
+		);
+
+		const badgeText = await badgeElement.getText();
+		const badgeCount = parseInt(badgeText, 10);
+
+		if (badgeCount !== expectedCount) {
+			throw new Error(
+				`Cart badge count mismatch: expected ${expectedCount}, but got ${badgeCount}`,
+			);
+		} else {
+			console.log(`Cart badge count verified: ${badgeCount}`);
+		}
 	}
 
 	async openSideMenu(): Promise<void> {
