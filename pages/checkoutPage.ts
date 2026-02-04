@@ -4,14 +4,17 @@ import {
 	waitAndInput,
 	waitForElement,
 } from "../utils/webElementHelpers";
+import { cartPage } from "./cartPage";
 
 export class checkoutPage {
 	private driver: WebDriver;
 	private timeout: number;
+	cartPageData: cartPage;
 
 	constructor(driver: WebDriver, timeout: number) {
 		this.driver = driver;
 		this.timeout = timeout;
+		this.cartPageData = new cartPage(driver, timeout);
 	}
 
 	checkoutGeneralLocators = {
@@ -165,6 +168,14 @@ export class checkoutPage {
 		firstName: string,
 		lastName: string,
 		postalCode: string,
+		productName: Array<
+			| "sauce labs backpack"
+			| "sauce labs bike light"
+			| "sauce labs bolt t-shirt"
+			| "sauce labs fleece jacket"
+			| "sauce labs onesie"
+			| "sauce labs test all things shirt"
+		>,
 	): Promise<void> {
 		//step 1
 		await this.waitForCheckoutStepOneToLoad();
@@ -175,6 +186,7 @@ export class checkoutPage {
 
 		//step 2
 		await this.waitForCheckoutStepTwoToLoad();
+		await this.cartPageData.verifyProductInCart(productName);
 		await this.clickFinishButton();
 
 		//checkout completion validation

@@ -26,8 +26,16 @@ const addToCartAndCheckout = async () => {
 		await navigationPageData.verifyCartBadgeCount(2);
 
 		await navigationPageData.openCart();
+		await cartPageData.waitForCartPageToOpen();
+		await cartPageData.verifyProductInCart([
+			"sauce labs backpack",
+			"sauce labs bike light",
+		]);
 		await cartPageData.clickCheckoutButton();
-		await checkoutPageData.completeCheckOutSteps("ose", "oziegbe", "0701995");
+		await checkoutPageData.completeCheckOutSteps("ose", "oziegbe", "0701995", [
+			"sauce labs backpack",
+			"sauce labs bike light",
+		]);
 		await driver.sleep(3000);
 	} catch (error) {
 		console.error(error);

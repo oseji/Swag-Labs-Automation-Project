@@ -16,6 +16,27 @@ export class cartPage {
 		yourCartHeading: By.xpath("//span[text()='Your Cart']"),
 	};
 
+	productLocators = {
+		saucelabsBackpack: By.xpath("//div[text()='Sauce Labs Backpack']"),
+		saucelabsBikeLight: By.xpath("//div[text()='Sauce Labs Bike Light']"),
+		saucelabsBoltTshirt: By.xpath("//div[text()='Sauce Labs Bolt T-Shirt']"),
+		saucelabsFleeceJacket: By.xpath("//div[text()='Sauce Labs Fleece Jacket']"),
+		saucelabsOnsie: By.xpath("//div[text()='Sauce Labs Onesie']"),
+		saucelabsTestAllThingsShirt: By.xpath(
+			"//div[text()='Test.allTheThings() T-Shirt (Red)']",
+		),
+	};
+
+	private productNameToLocatorMap = {
+		"sauce labs backpack": this.productLocators.saucelabsBackpack,
+		"sauce labs bike light": this.productLocators.saucelabsBikeLight,
+		"sauce labs bolt t-shirt": this.productLocators.saucelabsBoltTshirt,
+		"sauce labs fleece jacket": this.productLocators.saucelabsFleeceJacket,
+		"sauce labs onesie": this.productLocators.saucelabsOnsie,
+		"sauce labs test all things shirt":
+			this.productLocators.saucelabsTestAllThingsShirt,
+	};
+
 	async waitForCartPageToOpen(): Promise<void> {
 		await this.driver.wait(
 			until.urlIs("https://www.saucedemo.com/cart.html"),
@@ -27,6 +48,23 @@ export class cartPage {
 			this.cartPageLocators.yourCartHeading,
 			"cart page heading",
 		);
+	}
+
+	async verifyProductInCart(
+		productName: Array<
+			| "sauce labs backpack"
+			| "sauce labs bike light"
+			| "sauce labs bolt t-shirt"
+			| "sauce labs fleece jacket"
+			| "sauce labs onesie"
+			| "sauce labs test all things shirt"
+		>,
+	): Promise<void> {
+		for (const product of productName) {
+			const locator = this.productNameToLocatorMap[product];
+
+			await waitForElement(this.driver, locator, `${product} in the cart`);
+		}
 	}
 
 	async clickCheckoutButton(): Promise<void> {
