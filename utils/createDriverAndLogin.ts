@@ -16,6 +16,8 @@ export const createDriverAndLogin = async (
 		"profile.password_manager_enabled": false,
 	});
 
+	chromeOptions.addArguments("--incognito");
+
 	try {
 		driver = await new Builder()
 			.forBrowser("chrome")
