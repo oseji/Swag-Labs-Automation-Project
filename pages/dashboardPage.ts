@@ -194,24 +194,28 @@ export class DashboardPage {
 	}
 
 	async clickAddToCartButtonOnProduct(
-		product:
+		products: Array<
 			| "sauce labs backpack"
 			| "sauce labs bike light"
 			| "sauce labs bolt t-shirt"
 			| "sauce labs fleece jacket"
 			| "sauce labs onesie"
-			| "test all the things t-shirt red",
+			| "test all the things t-shirt red"
+		>,
 	): Promise<void> {
-		const formattedProduct = this.formatProductName(product);
-		const locator = By.id(`add-to-cart-${formattedProduct}`);
+		for (const product of products) {
+			const formattedProduct = this.formatProductName(product);
+			const locator = By.id(`add-to-cart-${formattedProduct}`);
 
-		await waitAndClick(
-			this.driver,
-			locator,
-			` add to cart button for ${product}`,
-		);
+			await waitAndClick(
+				this.driver,
+				locator,
+				` add to cart button for ${product}`,
+			);
 
-		await this.driver.sleep(3000);
+			await this.driver.sleep(1000);
+		}
+		await this.driver.sleep(1000);
 	}
 
 	async clickToOpenSocialMedia(
