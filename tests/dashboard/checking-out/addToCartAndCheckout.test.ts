@@ -19,9 +19,12 @@ const addToCartAndCheckout = async () => {
 		const cartPageData = new cartPage(driver, timeout);
 		const checkoutPageData = new checkoutPage(driver, timeout);
 
-		await dashboardPageData.clickAddToCartButtonOnProduct(
+		await dashboardPageData.clickAddToCartButtonOnProduct([
 			"sauce labs backpack",
-		);
+			"sauce labs bike light",
+		]);
+		await navigationPageData.verifyCartBadgeCount(2);
+
 		await navigationPageData.openCart();
 		await cartPageData.clickCheckoutButton();
 		await checkoutPageData.completeCheckOutSteps("ose", "oziegbe", "0701995");

@@ -1,5 +1,6 @@
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
+import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 
 const addProductToCart = async () => {
@@ -13,10 +14,13 @@ const addProductToCart = async () => {
 		);
 
 		const dashboardPageData = new DashboardPage(driver, timeout);
+		const navigationPageData = new NavigationBarPage(driver, timeout);
 
-		await dashboardPageData.clickAddToCartButtonOnProduct(
+		await dashboardPageData.clickAddToCartButtonOnProduct([
 			"sauce labs backpack",
-		);
+		]);
+
+		await navigationPageData.verifyCartBadgeCount(1);
 	} catch (error) {
 		console.error(error);
 	} finally {
