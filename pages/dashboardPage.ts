@@ -89,6 +89,10 @@ export class DashboardPage {
 	};
 
 	private formatProductName(product: string): string {
+		if (product === "test all the things t-shirt red") {
+			return "test.allthethings()-t-shirt-(red)";
+		}
+
 		return product.trim().toLowerCase().replace(/\s+/g, "-");
 	}
 

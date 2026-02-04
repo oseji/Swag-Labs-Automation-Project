@@ -33,7 +33,7 @@ export class cartPage {
 		"sauce labs bolt t-shirt": this.productLocators.saucelabsBoltTshirt,
 		"sauce labs fleece jacket": this.productLocators.saucelabsFleeceJacket,
 		"sauce labs onesie": this.productLocators.saucelabsOnsie,
-		"sauce labs test all things shirt":
+		"test all the things t-shirt red":
 			this.productLocators.saucelabsTestAllThingsShirt,
 	};
 
@@ -57,7 +57,7 @@ export class cartPage {
 			| "sauce labs bolt t-shirt"
 			| "sauce labs fleece jacket"
 			| "sauce labs onesie"
-			| "sauce labs test all things shirt"
+			| "test all the things t-shirt red"
 		>,
 	): Promise<void> {
 		for (const product of productName) {

@@ -169,6 +169,17 @@ export class checkoutPage {
 			throw new Error(
 				`Subtotal Mismatch: Calculated sum of items is ${calculatedItemTotal}, but UI shows ${subtotalValue}`,
 			);
+		} else {
+			console.log(`✅ Subtotal verified: ${subtotalValue}`);
+		}
+
+		// verify tax is 8% of subtotal
+		if (taxValue !== Math.round(subtotalValue * 0.08 * 100) / 100) {
+			throw new Error(
+				`Tax Mismatch: Expected tax to be ${Math.round(subtotalValue * 0.08 * 100) / 100}, but UI shows ${taxValue}`,
+			);
+		} else {
+			console.log(`✅ Tax verified: ${taxValue}`);
 		}
 
 		// verify subtotal + tax equals the displayed total
@@ -177,9 +188,11 @@ export class checkoutPage {
 			throw new Error(
 				`Grand Total Mismatch: ${subtotalValue} + ${taxValue} should be ${expectedTotal}, but UI shows ${totalValue}`,
 			);
+		} else {
+			console.log(`✅ Total verified: ${totalValue}`);
 		}
 
-		console.log("Price verification successful!");
+		console.log("✅ Price verification completed successful");
 	}
 
 	async clickFinishButton(): Promise<void> {
@@ -228,7 +241,7 @@ export class checkoutPage {
 			| "sauce labs bolt t-shirt"
 			| "sauce labs fleece jacket"
 			| "sauce labs onesie"
-			| "sauce labs test all things shirt"
+			| "test all the things t-shirt red"
 		>,
 	): Promise<void> {
 		//step 1
@@ -241,6 +254,7 @@ export class checkoutPage {
 		//step 2
 		await this.waitForCheckoutStepTwoToLoad();
 		await this.cartPageData.verifyProductInCart(productName);
+		await this.calculateAndVerifyPricesDisplayed();
 		await this.clickFinishButton();
 
 		//checkout completion validation
