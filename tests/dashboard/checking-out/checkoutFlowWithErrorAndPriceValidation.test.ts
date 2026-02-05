@@ -5,7 +5,7 @@ import { cartPage } from "../../../pages/cartPage";
 import { checkoutPage } from "../../../pages/checkoutPage";
 import { WebDriver } from "selenium-webdriver";
 
-const addToCartAndCheckout = async () => {
+const checkoutFlowWithErrorAndPriceValidation = async () => {
 	let driver: WebDriver | undefined;
 	const timeout = parseInt(process.env.TIMEOUT!);
 
@@ -36,15 +36,18 @@ const addToCartAndCheckout = async () => {
 		await navigationPageData.verifyCartBadgeCount(randomProducts.length);
 
 		await navigationPageData.openCart();
+
 		await cartPageData.waitForCartPageToOpen();
 		await cartPageData.verifyProductInCart(randomProducts);
 		await cartPageData.clickCheckoutButton();
+
 		await checkoutPageData.completeCheckOutSteps(
 			"ose",
 			"oziegbe",
 			"0701995",
 			randomProducts,
 		);
+
 		await driver.sleep(3000);
 	} catch (error) {
 		console.error(error);
@@ -54,4 +57,4 @@ const addToCartAndCheckout = async () => {
 	}
 };
 
-addToCartAndCheckout();
+checkoutFlowWithErrorAndPriceValidation();

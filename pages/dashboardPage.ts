@@ -216,8 +216,34 @@ export class DashboardPage {
 				locator,
 				` add to cart button for ${product}`,
 			);
+			console.log(`added ${product} to cart`);
+			await this.driver.sleep(500);
+		}
+		await this.driver.sleep(1000);
+	}
 
-			await this.driver.sleep(1000);
+	async clickRemoveFromCartButtonOnProduct(
+		products: Array<
+			| "sauce labs backpack"
+			| "sauce labs bike light"
+			| "sauce labs bolt t-shirt"
+			| "sauce labs fleece jacket"
+			| "sauce labs onesie"
+			| "test all the things t-shirt red"
+		>,
+	): Promise<void> {
+		for (const product of products) {
+			const formattedProduct = this.formatProductName(product);
+			const locator = By.id(`remove-${formattedProduct}`);
+
+			await waitAndClick(
+				this.driver,
+				locator,
+				` remove from cart button for ${product}`,
+			);
+
+			console.log(`removed ${product} from cart`);
+			await this.driver.sleep(500);
 		}
 		await this.driver.sleep(1000);
 	}

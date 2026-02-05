@@ -264,6 +264,18 @@ export class checkoutPage {
 		);
 	}
 
+	async validateAndInputField(
+		field: "first name" | "last name" | "postal code",
+		value: string,
+		inputMethod: (value: string) => Promise<void>,
+	) {
+		await inputMethod("");
+		await this.clickContinueButton();
+		await this.verifyCorrectErrorMessageDisplayed(field);
+		await this.closeErrorMessage();
+		await inputMethod(value);
+	}
+
 	async completeCheckOutSteps(
 		firstName: string,
 		lastName: string,
@@ -279,26 +291,22 @@ export class checkoutPage {
 	): Promise<void> {
 		//step 1
 		await this.waitForCheckoutStepOneToLoad();
-		//put empty first name to test error handling
-		await this.inputFirstName("");
-		await this.clickContinueButton();
-		await this.verifyCorrectErrorMessageDisplayed("first name");
-		await this.closeErrorMessage();
-		await this.inputFirstName(firstName);
 
-		// put empty last name to test error handling
-		await this.inputLastName("");
-		await this.clickContinueButton();
-		await this.verifyCorrectErrorMessageDisplayed("last name");
-		await this.closeErrorMessage();
-		await this.inputLastName(lastName);
-
-		// put empty postal code to test error handling
-		await this.inputPostalCode("");
-		await this.clickContinueButton();
-		await this.verifyCorrectErrorMessageDisplayed("postal code");
-		await this.closeErrorMessage();
-		await this.inputPostalCode(postalCode);
+		await this.validateAndInputField(
+			"first name",
+			firstName,
+			this.inputFirstName.bind(this),
+		);
+		await this.validateAndInputField(
+			"last name",
+			lastName,
+			this.inputLastName.bind(this),
+		);
+		await this.validateAndInputField(
+			"postal code",
+			postalCode,
+			this.inputPostalCode.bind(this),
+		);
 		await this.clickContinueButton();
 
 		//step 2
