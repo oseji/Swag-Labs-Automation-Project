@@ -29,7 +29,15 @@ export class checkoutPage {
 		lastNameInput: By.id("last-name"),
 		postalCodeInput: By.id("postal-code"),
 		continueButton: By.id("continue"),
-		errorMessage: By.xpath("//h3[text()='Error: First Name is required']"),
+		firstNameErrorMessage: By.xpath(
+			"//h3[text()='Error: First Name is required']",
+		),
+		lastNameErrorMessage: By.xpath(
+			"//h3[text()='Error: Last Name is required']",
+		),
+		postalCodeErrorMessage: By.xpath(
+			"//h3[text()='Error: Postal Code is required']",
+		),
 		closeErrorMessageButton: By.xpath("//button[@data-test='error-button']"),
 	};
 
@@ -106,6 +114,34 @@ export class checkoutPage {
 		);
 	}
 
+	async verifyCorrectErrorMessageDisplayed(
+		expectedErrorMessage: string,
+	): Promise<void> {
+		if (expectedErrorMessage === "first name") {
+			await waitForElement(
+				this.driver,
+				this.checkoutPageStepOneLocators.firstNameErrorMessage,
+				"first name error message",
+			);
+		}
+
+		if (expectedErrorMessage === "last name") {
+			await waitForElement(
+				this.driver,
+				this.checkoutPageStepOneLocators.lastNameErrorMessage,
+				"last name error message",
+			);
+		}
+
+		if (expectedErrorMessage === "postal code") {
+			await waitForElement(
+				this.driver,
+				this.checkoutPageStepOneLocators.postalCodeErrorMessage,
+				"postal code error message",
+			);
+		}
+	}
+
 	async closeErrorMessage(): Promise<void> {
 		await waitAndClick(
 			this.driver,
@@ -129,9 +165,6 @@ export class checkoutPage {
 	}
 
 	private itemPricesLocator = By.css('[data-test="inventory-item-price"]');
-	private subtotalLabel = By.css('[data-test="subtotal-label"]');
-	private taxLabel = By.css('[data-test="tax-label"]');
-	private totalLabel = By.css('[data-test="total-label"]');
 
 	async calculateAndVerifyPricesDisplayed(): Promise<void> {
 		const priceOfElements = await this.driver.findElements(
@@ -246,8 +279,25 @@ export class checkoutPage {
 	): Promise<void> {
 		//step 1
 		await this.waitForCheckoutStepOneToLoad();
+		//put empty first name to test error handling
+		await this.inputFirstName("");
+		await this.clickContinueButton();
+		await this.verifyCorrectErrorMessageDisplayed("first name");
+		await this.closeErrorMessage();
 		await this.inputFirstName(firstName);
+
+		// put empty last name to test error handling
+		await this.inputLastName("");
+		await this.clickContinueButton();
+		await this.verifyCorrectErrorMessageDisplayed("last name");
+		await this.closeErrorMessage();
 		await this.inputLastName(lastName);
+
+		// put empty postal code to test error handling
+		await this.inputPostalCode("");
+		await this.clickContinueButton();
+		await this.verifyCorrectErrorMessageDisplayed("postal code");
+		await this.closeErrorMessage();
 		await this.inputPostalCode(postalCode);
 		await this.clickContinueButton();
 
