@@ -257,6 +257,51 @@ export class checkoutPage {
 		await inputMethod(value);
 	}
 
+	async checkoutStepOne(
+		firstName: string,
+		lastName: string,
+		postalCode: string,
+	): Promise<void> {
+		await this.waitForCheckoutStepOneToLoad();
+		await this.validateAndInputField(
+			"first name",
+			firstName,
+			this.inputFirstName.bind(this),
+		);
+		await this.validateAndInputField(
+			"last name",
+			lastName,
+			this.inputLastName.bind(this),
+		);
+		await this.validateAndInputField(
+			"postal code",
+			postalCode,
+			this.inputPostalCode.bind(this),
+		);
+		await this.clickContinueButton();
+	}
+
+	async checkoutStepTwo(
+		productName: Array<
+			| "sauce labs backpack"
+			| "sauce labs bike light"
+			| "sauce labs bolt t-shirt"
+			| "sauce labs fleece jacket"
+			| "sauce labs onesie"
+			| "test all the things t-shirt red"
+		>,
+	): Promise<void> {
+		await this.waitForCheckoutStepTwoToLoad();
+		await this.cartPageData.verifyProductInCart(productName);
+		await this.calculateAndVerifyPricesDisplayed();
+		await this.clickFinishButton();
+	}
+
+	async lastCheckOutStep(): Promise<void> {
+		await this.waitForCheckoutCompletePageToLoad();
+		await this.clickBackToHomeButton();
+	}
+
 	async completeCheckOutSteps(
 		firstName: string,
 		lastName: string,

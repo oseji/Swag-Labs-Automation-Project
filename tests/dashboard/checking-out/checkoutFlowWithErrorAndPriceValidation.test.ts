@@ -41,14 +41,11 @@ const checkoutFlowWithErrorAndPriceValidation = async () => {
 		await cartPageData.verifyProductInCart(randomProducts);
 		await cartPageData.clickCheckoutButton();
 
-		await checkoutPageData.completeCheckOutSteps(
-			"ose",
-			"oziegbe",
-			"0701995",
-			randomProducts,
-		);
+		await checkoutPageData.checkoutStepOne("ose", "oziegbe", "0701995");
+		await checkoutPageData.checkoutStepTwo(randomProducts);
+		await checkoutPageData.lastCheckOutStep();
 
-		await driver.sleep(3000);
+		await driver.sleep(2000);
 	} catch (error) {
 		console.error(error);
 	} finally {
