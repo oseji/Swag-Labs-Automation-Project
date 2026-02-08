@@ -1,3 +1,4 @@
+/*verifies that clicking a product on the dashboard opens its product details page.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { WebDriver, Builder } from "selenium-webdriver";
 import { LandingPage } from "../../../pages/landingPage";
@@ -15,10 +16,11 @@ const openProductDetailsPage = async () => {
 		const dashboardPageData = new DashboardPage(driver, timeout);
 
 		await dashboardPageData.clickOnProductToViewDetails("sauce labs backpack");
+
+		console.log("Open product details page validation completed.");
 	} catch (error) {
-		console.error(error);
+		console.error("Open product details page validation failed:", error);
 	} finally {
-		console.log("completed test");
 		if (driver) await driver.quit();
 	}
 };

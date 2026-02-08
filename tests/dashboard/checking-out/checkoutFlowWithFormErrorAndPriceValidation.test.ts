@@ -1,3 +1,4 @@
+/*verifies the full checkout flow: add products, open cart, complete checkout steps, and validate cart items and pricing.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
@@ -46,10 +47,16 @@ const checkoutFlowWithErrorAndPriceValidation = async () => {
 		await checkoutPageData.lastCheckOutStep();
 
 		await driver.sleep(2000);
+
+		console.log(
+			"Checkout flow with form error and price validation completed.",
+		);
 	} catch (error) {
-		console.error(error);
+		console.error(
+			"Checkout flow with form error and price validation failed:",
+			error,
+		);
 	} finally {
-		console.log("completed test");
 		if (driver) await driver.quit();
 	}
 };

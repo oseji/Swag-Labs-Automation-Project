@@ -1,3 +1,4 @@
+/*verifies that the side menu opens and displays the expected menu items and content.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 
 import { WebDriver, Builder } from "selenium-webdriver";
@@ -17,9 +18,9 @@ export const openMenuAndVerifyContent = async () => {
 
 		await navigationBarPageData.openMenuAndVerifyContent();
 
-		console.log("completed opening menu and verifying content test");
+		console.log("Menu visibility and content validation completed.");
 	} catch (error) {
-		console.log(error);
+		console.error("Menu visibility and content validation failed:", error);
 		throw error;
 	} finally {
 		if (driver) {

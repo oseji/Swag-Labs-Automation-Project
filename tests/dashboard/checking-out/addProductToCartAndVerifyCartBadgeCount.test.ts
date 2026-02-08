@@ -1,3 +1,4 @@
+/*Verifies that adding random products to the cart updates the cart badge count to match the number of items added.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
@@ -32,10 +33,14 @@ const addProductToCart = async () => {
 		await dashboardPageData.clickAddToCartButtonOnProduct(randomProducts);
 
 		await navigationPageData.verifyCartBadgeCount(randomProducts.length);
+
+		console.log("Add product to cart and verify cart badge count completed.");
 	} catch (error) {
-		console.error(error);
+		console.error(
+			"Add product to cart and verify cart badge count failed:",
+			error,
+		);
 	} finally {
-		console.log("completed test");
 		if (driver) await driver.quit();
 	}
 };

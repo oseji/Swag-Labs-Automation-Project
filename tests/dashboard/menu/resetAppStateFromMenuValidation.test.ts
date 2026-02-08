@@ -1,3 +1,4 @@
+/*verifies that "Reset App State" in the menu clears the cart and the cart badge count returns to zero.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
@@ -36,10 +37,11 @@ const resetAppState = async () => {
 		await navigationPageData.clickResetAppStateMenuButton();
 
 		await navigationPageData.verifyCartBadgeCount(0);
+
+		console.log("Reset app state from menu validation completed.");
 	} catch (error) {
-		console.error(error);
+		console.error("Reset app state from menu validation failed:", error);
 	} finally {
-		console.log("completed test");
 		if (driver) await driver.quit();
 	}
 };

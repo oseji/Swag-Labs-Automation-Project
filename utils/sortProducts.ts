@@ -41,12 +41,11 @@ export const sortProducts = async (
 			);
 		}
 
-		console.log("completed sorting products by " + sortType);
+		console.log(`completed filter products by ${sortType} test`);
 	} catch (error) {
 		console.log(error);
 		throw error;
 	} finally {
-		console.log(`completed filter products by ${sortType} test`);
 		if (driver) await driver.quit();
 	}
 };

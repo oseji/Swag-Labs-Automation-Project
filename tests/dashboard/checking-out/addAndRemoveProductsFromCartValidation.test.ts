@@ -1,3 +1,4 @@
+/*verifies adding products to the cart, that the cart badge count updates correctly, and that removing a product updates the count.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
@@ -26,10 +27,14 @@ const addProductToCartAndRemove = async () => {
 			"sauce labs backpack",
 		]);
 		await navigationPageData.verifyCartBadgeCount(1);
+
+		console.log("Add and remove products from cart validation completed.");
 	} catch (error) {
-		console.error(error);
+		console.error(
+			"Add and remove products from cart validation failed:",
+			error,
+		);
 	} finally {
-		console.log("completed test");
 		if (driver) await driver.quit();
 	}
 };
