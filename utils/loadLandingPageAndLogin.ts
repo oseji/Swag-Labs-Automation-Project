@@ -2,11 +2,15 @@ import dotenv from "dotenv";
 dotenv.config();
 import { Options } from "selenium-webdriver/chrome";
 
-import { WebDriver, Builder } from "selenium-webdriver";
+import { WebDriver, Builder, until } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
 
 export const loadLandingPageAndLogin = async (
-	testType: "happy path" | "negative path" | "no username",
+	testType:
+		| "happy path"
+		| "negative path"
+		| "no username"
+		| "protected route access without login",
 	username: string,
 	password: string,
 ) => {
@@ -48,8 +52,19 @@ export const loadLandingPageAndLogin = async (
 
 			console.log(`completed no username test for load landing page and login`);
 		}
+
+		if (testType === "protected route access without login") {
+			await landingPageData.openLandingPageAndWaitForItToLoad();
+
+			await driver.get(process.env.DASHBOARD_URL!);
+
+			await driver.sleep(3000);
+			await landingPageData.waitForProtectedRouteErrorMessage();
+
+			console.log("Protected route access without login validation completed.");
+		}
 	} catch (error) {
-		console.error(`Test failed: ${error}`);
+		console.error(`${testType} test failed:`, error);
 		throw error;
 	} finally {
 		if (driver) await driver.quit();

@@ -10,6 +10,7 @@
 		"test:auth:blank": "ts-node tests/authentication/loginWithEmptyUsernameValidation.test.ts",
 		"test:auth:wrong": "ts-node tests/authentication/loginWithInvalidCredentialsValidation.test.ts",
 		"test:auth:logout": "ts-node tests/authentication/logoutAndSessionPersistenceValidation.test.ts",
+		"test:auth:protected-route": "ts-node tests/authentication/protectedRouteAccessWithoutLoginValidation.test.ts",
 		"test:products": "npm run test:products:details && npm run test:sort",
 		"test:products:details": "ts-node tests/dashboard/product-sorting/openProductDetailsPageValidation.test.ts",
 		"test:cart": "npm run test:cart:add && npm run test:cart:remove && npm run test:cart:checkout",

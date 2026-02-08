@@ -24,6 +24,9 @@ export class LandingPage {
 		negativePathErrorMessage: By.xpath(
 			`//h3[normalize-space()="Epic sadface: Username and password do not match any user in this service"]`,
 		),
+		protectedRouteErrorMessage: By.xpath(
+			`//h3[normalize-space()="Epic sadface: You can only access '/inventory.html' when you are logged in."]`,
+		),
 		productFilter: By.className("product_sort_container"),
 	};
 
@@ -74,6 +77,16 @@ export class LandingPage {
 			this.driver,
 			this.locators.negativePathErrorMessage,
 			"negative path error message",
+		);
+
+		await this.driver.sleep(2000);
+	}
+
+	async waitForProtectedRouteErrorMessage(): Promise<void> {
+		await waitForElement(
+			this.driver,
+			this.locators.protectedRouteErrorMessage,
+			"protected route error message",
 		);
 
 		await this.driver.sleep(2000);
