@@ -34,14 +34,14 @@ Tests are written in **TypeScript**, use **Chrome** via Selenium WebDriver, and 
 
 ## Tech Stack
 
-| Technology | Purpose |
-|------------|--------|
-| **TypeScript** | Type-safe test and page code |
-| **Selenium WebDriver** | Browser automation (Chrome) |
-| **dotenv** | Environment and config (URLs, credentials, timeouts) |
-| **ts-node** | Run TypeScript tests without a separate compile step |
+| Technology             | Purpose                                              |
+| ---------------------- | ---------------------------------------------------- |
+| **TypeScript**         | Type-safe test and page code                         |
+| **Selenium WebDriver** | Browser automation (Chrome)                          |
+| **dotenv**             | Environment and config (URLs, credentials, timeouts) |
+| **ts-node**            | Run TypeScript tests without a separate compile step |
 
-- **Runtime:** Node.js  
+- **Runtime:** Node.js
 - **Browser:** Chrome (ChromeDriver is managed by Selenium)
 
 ---
@@ -106,13 +106,13 @@ ChromeDriver is fetched automatically by Selenium; no separate install is requir
 
 Create a `.env` file in the project root with at least:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `LANDING_PAGE_URL` | Login page URL | `https://www.saucedemo.com` |
-| `DASHBOARD_URL` | URL after successful login | `https://www.saucedemo.com/inventory.html` |
-| `TIMEOUT` | Default wait timeout (ms) | `20000` |
-| `USER_NAME` | Valid Swag Labs username | `standard_user` |
-| `PASSWORD` | Valid Swag Labs password | `secret_sauce` |
+| Variable           | Description                | Example                                    |
+| ------------------ | -------------------------- | ------------------------------------------ |
+| `LANDING_PAGE_URL` | Login page URL             | `https://www.saucedemo.com`                |
+| `DASHBOARD_URL`    | URL after successful login | `https://www.saucedemo.com/inventory.html` |
+| `TIMEOUT`          | Default wait timeout (ms)  | `20000`                                    |
+| `USER_NAME`        | Valid Swag Labs username   | `standard_user`                            |
+| `PASSWORD`         | Valid Swag Labs password   | `secret_sauce`                             |
 
 Example `.env`:
 
@@ -143,28 +143,28 @@ This runs, in order: auth → products (details + sort) → cart → menu.
 
 ### Run by category
 
-| Command | What it runs |
-|--------|----------------|
-| `npm run test:auth` | All authentication tests (valid login, blank username, invalid credentials) |
-| `npm run test:auth:login` | Valid credentials login only |
-| `npm run test:auth:blank` | Empty username validation |
-| `npm run test:auth:wrong` | Invalid credentials validation |
-| `npm run test:auth:logout` | Logout and session persistence |
-| `npm run test:auth:protected-route` | Accessing dashboard without login |
-| `npm run test:products` | Product details + all sort tests |
-| `npm run test:sort` | All sorting tests (A–Z, Z–A, price low–high, high–low) |
-| `npm run test:cart` | Cart add, remove, and checkout flow |
-| `npm run test:menu` | Menu visibility, reset app state, About navigation |
+| Command                             | What it runs                                                                |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| `npm run test:auth`                 | All authentication tests (valid login, blank username, invalid credentials) |
+| `npm run test:auth:login`           | Valid credentials login only                                                |
+| `npm run test:auth:blank`           | Empty username validation                                                   |
+| `npm run test:auth:wrong`           | Invalid credentials validation                                              |
+| `npm run test:auth:logout`          | Logout and session persistence                                              |
+| `npm run test:auth:protected-route` | Accessing dashboard without login                                           |
+| `npm run test:products`             | Product details + all sort tests                                            |
+| `npm run test:sort`                 | All sorting tests (A–Z, Z–A, price low–high, high–low)                      |
+| `npm run test:cart`                 | Cart add, remove, and checkout flow                                         |
+| `npm run test:menu`                 | Menu visibility, reset app state, About navigation                          |
 
 ### Run a single test file
 
-You can run one test file with `ts-node`:
+Run a single test using the npm scripts defined in `package.json`. For example, to run the valid-login authentication test:
 
 ```bash
-npx ts-node tests/authentication/loginWithValidCredentials.test.ts
+npm run test:auth:login
 ```
 
-(Replace with the path to any test file.)
+To run any other single test, use the corresponding script name from the `scripts` section.
 
 ---
 
@@ -229,13 +229,13 @@ This keeps tests readable and reduces duplication when the UI changes.
 
 Summary of variables used:
 
-| Variable | Required | Purpose |
-|----------|----------|--------|
-| `LANDING_PAGE_URL` | Yes | Login page to open |
-| `DASHBOARD_URL` | Yes | Expected URL after login and for protected-route test |
-| `TIMEOUT` | No (default 20000) | Global wait timeout in ms |
-| `USER_NAME` | Yes (for most tests) | Swag Labs username (e.g. `standard_user`) |
-| `PASSWORD` | Yes (for most tests) | Swag Labs password (e.g. `secret_sauce`) |
+| Variable           | Required             | Purpose                                               |
+| ------------------ | -------------------- | ----------------------------------------------------- |
+| `LANDING_PAGE_URL` | Yes                  | Login page to open                                    |
+| `DASHBOARD_URL`    | Yes                  | Expected URL after login and for protected-route test |
+| `TIMEOUT`          | No (default 20000)   | Global wait timeout in ms                             |
+| `USER_NAME`        | Yes (for most tests) | Swag Labs username (e.g. `standard_user`)             |
+| `PASSWORD`         | Yes (for most tests) | Swag Labs password (e.g. `secret_sauce`)              |
 
 Ensure `.env` is in `.gitignore` and never commit real credentials.
 
