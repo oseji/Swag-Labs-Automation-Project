@@ -28,10 +28,10 @@ const addProductToCartAndRemove = async () => {
 		]);
 		await navigationPageData.verifyCartBadgeCount(1);
 
-		console.log("Add and remove products from cart validation completed.");
+		console.log("✅ Add and remove products from cart validation completed.");
 	} catch (error) {
 		console.error(
-			"Add and remove products from cart validation failed:",
+			"❌ Add and remove products from cart validation failed:",
 			error,
 		);
 	} finally {

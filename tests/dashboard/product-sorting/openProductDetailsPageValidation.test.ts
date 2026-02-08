@@ -1,7 +1,7 @@
 /*verifies that clicking a product on the dashboard opens its product details page.*/
+import { expect } from "chai";
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
-import { WebDriver, Builder } from "selenium-webdriver";
-import { LandingPage } from "../../../pages/landingPage";
+import { WebDriver } from "selenium-webdriver";
 import { DashboardPage } from "../../../pages/dashboardPage";
 
 const openProductDetailsPage = async () => {
@@ -17,9 +17,17 @@ const openProductDetailsPage = async () => {
 
 		await dashboardPageData.clickOnProductToViewDetails("sauce labs backpack");
 
-		console.log("Open product details page validation completed.");
+		const currentUrl = await driver.getCurrentUrl();
+		expect(currentUrl).to.include(
+			"inventory-item.html",
+			"Clicking a product should open its details page",
+		);
+		expect(currentUrl).to.include("id=", "Details page URL should include product id");
+
+		console.log("✅ Open product details page validation completed.");
 	} catch (error) {
-		console.error("Open product details page validation failed:", error);
+		console.error("❌ Open product details page validation failed:", error);
+		throw error;
 	} finally {
 		if (driver) await driver.quit();
 	}

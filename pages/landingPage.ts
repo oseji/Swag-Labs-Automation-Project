@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { WebDriver, By, until } from "selenium-webdriver";
 import {
 	waitAndClick,
@@ -103,6 +104,12 @@ export class LandingPage {
 			this.driver,
 			this.locators.productFilter,
 			"products label",
+		);
+
+		const currentUrl = await this.driver.getCurrentUrl();
+		expect(currentUrl).to.equal(
+			process.env.DASHBOARD_URL,
+			"Dashboard URL should be loaded after login",
 		);
 	}
 

@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
 
@@ -65,6 +66,11 @@ export class cartPage {
 
 			await waitForElement(this.driver, locator, `${product} in the cart`);
 		}
+
+		expect(productName.length).to.be.greaterThan(
+			0,
+			"At least one product should be in cart",
+		);
 	}
 
 	async clickCheckoutButton(): Promise<void> {

@@ -31,7 +31,7 @@ export const createDriverAndLogin = async (
 
 		return driver;
 	} catch (error) {
-		console.error(`Script failed: ${error}`);
+		console.error(`❌ Script failed:`, error);
 		throw error;
 	}
 };

@@ -1,9 +1,8 @@
 /*verifies that the side menu opens and displays the expected menu items and content.*/
+import { expect } from "chai";
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
-
-import { WebDriver, Builder } from "selenium-webdriver";
+import { WebDriver } from "selenium-webdriver";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
-import { LandingPage } from "../../../pages/landingPage";
 
 export const openMenuAndVerifyContent = async () => {
 	let driver: WebDriver | undefined;
@@ -14,13 +13,17 @@ export const openMenuAndVerifyContent = async () => {
 			process.env.USER_NAME!,
 			process.env.PASSWORD!,
 		);
-		const navigationBarPageData = new NavigationBarPage(driver, timeout);
 
+		const navigationBarPageData = new NavigationBarPage(driver, timeout);
 		await navigationBarPageData.openMenuAndVerifyContent();
 
-		console.log("Menu visibility and content validation completed.");
+		expect(await driver.getCurrentUrl()).to.equal(
+			process.env.DASHBOARD_URL,
+			"Menu test should start from dashboard",
+		);
+		console.log("✅ Menu visibility and content validation completed.");
 	} catch (error) {
-		console.error("Menu visibility and content validation failed:", error);
+		console.error("❌ Menu visibility and content validation failed:", error);
 		throw error;
 	} finally {
 		if (driver) {

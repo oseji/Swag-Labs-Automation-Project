@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { WebDriver, By, until } from "selenium-webdriver";
 import {
 	waitAndClick,
@@ -167,11 +168,10 @@ export class checkoutPage {
 	private itemPricesLocator = By.css('[data-test="inventory-item-price"]');
 
 	private verifyValues(actual: number, expected: number, label: string) {
-		if (actual !== expected) {
-			throw new Error(
-				`${label} Mismatch: Expected ${expected}, but UI shows ${actual}`,
-			);
-		}
+		expect(
+			actual,
+			`${label} should match calculated value`,
+		).to.equal(expected);
 		console.log(`✅ ${label} verified: ${actual}`);
 	}
 

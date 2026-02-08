@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { expect } from "chai";
 import { Options } from "selenium-webdriver/chrome";
 
-import { WebDriver, Builder, until } from "selenium-webdriver";
+import { WebDriver, Builder } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
 
 export const loadLandingPageAndLogin = async (
@@ -34,15 +35,30 @@ export const loadLandingPageAndLogin = async (
 			await landingPageData.waitForLandingPageAndLogin(username, password);
 			await landingPageData.waitForDashboardToLoad();
 
-			console.log(`completed happy path test for load landing page and login`);
+			const currentUrl = await driver.getCurrentUrl();
+			expect(currentUrl).to.equal(
+				process.env.DASHBOARD_URL,
+				"User should be redirected to dashboard after valid login",
+			);
+
+			console.log(`✅ completed happy path test for load landing page and login`);
 		}
 
 		if (testType === "negative path") {
 			await landingPageData.waitForLandingPageAndLogin("username", password);
 			await landingPageData.waitForNegativePathErrorMessage();
 
+			const errorEl = await driver.findElement(
+				landingPageData.locators.negativePathErrorMessage,
+			);
+			const errorText = await errorEl.getText();
+			expect(errorText).to.include(
+				"do not match any user",
+				"Invalid credentials should show matching error message",
+			);
+
 			console.log(
-				`completed negative path test for load landing page and login`,
+				`✅ completed negative path test for load landing page and login`,
 			);
 		}
 
@@ -50,7 +66,16 @@ export const loadLandingPageAndLogin = async (
 			await landingPageData.waitForLandingPageAndLogin("", password);
 			await landingPageData.waitForNoUsernameErrorMessage();
 
-			console.log(`completed no username test for load landing page and login`);
+			const errorEl = await driver.findElement(
+				landingPageData.locators.noUserNameErrorMessage,
+			);
+			const errorText = await errorEl.getText();
+			expect(errorText).to.include(
+				"Username is required",
+				"Empty username should show required-username error",
+			);
+
+			console.log(`✅ completed no username test for load landing page and login`);
 		}
 
 		if (testType === "protected route access without login") {
@@ -61,10 +86,19 @@ export const loadLandingPageAndLogin = async (
 			await driver.sleep(3000);
 			await landingPageData.waitForProtectedRouteErrorMessage();
 
-			console.log("Protected route access without login validation completed.");
+			const errorEl = await driver.findElement(
+				landingPageData.locators.protectedRouteErrorMessage,
+			);
+			const errorText = await errorEl.getText();
+			expect(errorText).to.include(
+				"logged in",
+				"Protected route should show login-required message",
+			);
+
+			console.log("✅ Protected route access without login validation completed.");
 		}
 	} catch (error) {
-		console.error(`${testType} test failed:`, error);
+		console.error(`❌ ${testType} test failed:`, error);
 		throw error;
 	} finally {
 		if (driver) await driver.quit();

@@ -34,10 +34,10 @@ const addProductToCart = async () => {
 
 		await navigationPageData.verifyCartBadgeCount(randomProducts.length);
 
-		console.log("Add product to cart and verify cart badge count completed.");
+		console.log("✅ Add product to cart and verify cart badge count completed.");
 	} catch (error) {
 		console.error(
-			"Add product to cart and verify cart badge count failed:",
+			"❌ Add product to cart and verify cart badge count failed:",
 			error,
 		);
 	} finally {

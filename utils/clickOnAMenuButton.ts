@@ -1,6 +1,7 @@
+import { expect } from "chai";
 import { createDriverAndLogin } from "./createDriverAndLogin";
 
-import { WebDriver, Builder, until } from "selenium-webdriver";
+import { WebDriver, until } from "selenium-webdriver";
 import { NavigationBarPage } from "../pages/navigationBarPage";
 import { LandingPage } from "../pages/landingPage";
 
@@ -25,26 +26,38 @@ export const clickOnAMenuButton = async (
 
 		if (buttonName === "about") {
 			await navigationBarPageData.clickOnAboutMenuButton();
+			expect(await driver.getCurrentUrl()).to.include(
+				"saucelabs.com",
+				"About menu should navigate to Sauce Labs site",
+			);
 		}
 		if (buttonName === "logout") {
 			await navigationBarPageData.clickOnLogoutMenuButton();
 
-			//verify that we are back on the landing page
 			await driver.wait(until.urlIs(process.env.LANDING_PAGE_URL!), timeout);
+			expect(await driver.getCurrentUrl()).to.equal(
+				process.env.LANDING_PAGE_URL,
+				"After logout user should be on landing page",
+			);
 
-			//verify that clicking back does not go back to the dashboard
 			await driver.navigate().back();
+
 			await driver.wait(until.urlIs(process.env.LANDING_PAGE_URL!), timeout);
+			expect(await driver.getCurrentUrl()).to.equal(
+				process.env.LANDING_PAGE_URL,
+				"Back button should not restore dashboard session",
+			);
 		}
 		if (buttonName === "reset app state") {
+			await driver.sleep(1000);
 			await navigationBarPageData.clickResetAppStateMenuButton();
 		}
 
 		console.log(
-			`completed clicking on ${buttonName.toLocaleUpperCase()} menu button test`,
+			`✅ completed clicking on ${buttonName.toLocaleUpperCase()} menu button test`,
 		);
 	} catch (error) {
-		console.log(error);
+		console.error(`❌ ${buttonName} menu button test failed:`, error);
 		throw error;
 	} finally {
 		if (driver) {

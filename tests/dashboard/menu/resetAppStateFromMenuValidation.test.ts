@@ -38,9 +38,9 @@ const resetAppState = async () => {
 
 		await navigationPageData.verifyCartBadgeCount(0);
 
-		console.log("Reset app state from menu validation completed.");
+		console.log("✅ Reset app state from menu validation completed.");
 	} catch (error) {
-		console.error("Reset app state from menu validation failed:", error);
+		console.error("❌ Reset app state from menu validation failed:", error);
 	} finally {
 		if (driver) await driver.quit();
 	}

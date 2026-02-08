@@ -1,4 +1,5 @@
 /*verifies the full checkout flow: add products, open cart, complete checkout steps, and validate cart items and pricing.*/
+import { expect } from "chai";
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
@@ -48,12 +49,17 @@ const checkoutFlowWithErrorAndPriceValidation = async () => {
 
 		await driver.sleep(2000);
 
+		expect(await driver.getCurrentUrl()).to.equal(
+			process.env.DASHBOARD_URL,
+			"After checkout complete and Back Home, user should be on dashboard",
+		);
+
 		console.log(
-			"Checkout flow with form error and price validation completed.",
+			"✅ Checkout flow with form error and price validation completed.",
 		);
 	} catch (error) {
 		console.error(
-			"Checkout flow with form error and price validation failed:",
+			"❌ Checkout flow with form error and price validation failed:",
 			error,
 		);
 	} finally {

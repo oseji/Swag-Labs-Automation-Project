@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
 
@@ -41,13 +42,11 @@ export class NavigationBarPage {
 		const badgeText = await badgeElement.getText();
 		const badgeCount = parseInt(badgeText, 10);
 
-		if (badgeCount !== expectedCount) {
-			throw new Error(
-				`Cart badge count mismatch: expected ${expectedCount}, but got ${badgeCount}`,
-			);
-		} else {
-			console.log(`Cart badge count verified: ${badgeCount}`);
-		}
+		console.log(`Cart badge count verified: ${badgeCount}`);
+		expect(
+			badgeCount,
+			`Cart badge count should be ${expectedCount}`,
+		).to.equal(expectedCount);
 	}
 
 	async openSideMenu(): Promise<void> {
