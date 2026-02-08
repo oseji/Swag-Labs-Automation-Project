@@ -3,9 +3,22 @@ import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 
-const addProductToCart = async () => {
+const resetAppState = async () => {
 	let driver: WebDriver | undefined;
 	const timeout = parseInt(process.env.TIMEOUT!);
+
+	const products = [
+		"sauce labs backpack",
+		"sauce labs bike light",
+		"sauce labs bolt t-shirt",
+		"sauce labs fleece jacket",
+		"sauce labs onesie",
+		"test all the things t-shirt red",
+	] as const;
+
+	const randomProducts = [...products]
+		.sort(() => 0.5 - Math.random())
+		.slice(0, 3);
 
 	try {
 		driver = await createDriverAndLogin(
@@ -16,11 +29,13 @@ const addProductToCart = async () => {
 		const dashboardPageData = new DashboardPage(driver, timeout);
 		const navigationPageData = new NavigationBarPage(driver, timeout);
 
-		await dashboardPageData.clickAddToCartButtonOnProduct([
-			"sauce labs backpack",
-		]);
+		await dashboardPageData.clickAddToCartButtonOnProduct(randomProducts);
 
-		await navigationPageData.verifyCartBadgeCount(1);
+		await navigationPageData.verifyCartBadgeCount(randomProducts.length);
+
+		await navigationPageData.clickResetAppStateMenuButton();
+
+		await navigationPageData.verifyCartBadgeCount(0);
 	} catch (error) {
 		console.error(error);
 	} finally {
@@ -29,4 +44,4 @@ const addProductToCart = async () => {
 	}
 };
 
-addProductToCart();
+resetAppState();
