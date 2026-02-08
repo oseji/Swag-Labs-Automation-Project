@@ -166,66 +166,47 @@ export class checkoutPage {
 
 	private itemPricesLocator = By.css('[data-test="inventory-item-price"]');
 
+	private verifyValues(actual: number, expected: number, label: string) {
+		if (actual !== expected) {
+			throw new Error(
+				`${label} Mismatch: Expected ${expected}, but UI shows ${actual}`,
+			);
+		}
+		console.log(`✅ ${label} verified: ${actual}`);
+	}
+
 	async calculateAndVerifyPricesDisplayed(): Promise<void> {
-		const priceOfElements = await this.driver.findElements(
+		const getPriceValue = async (locator: any) => {
+			const text = await this.driver.findElement(locator).getText();
+			return parseFloat(text.replace(/[^0-9.]/g, ""));
+		};
+
+		const priceElements = await this.driver.findElements(
 			this.itemPricesLocator,
 		);
+		const itemTexts = await Promise.all(
+			priceElements.map((el) => el.getText()),
+		);
+		const calculatedSum = itemTexts.reduce(
+			(acc, text) => acc + parseFloat(text.replace("$", "")),
+			0,
+		);
+		const roundedSum = Math.round(calculatedSum * 100) / 100;
 
-		let calculatedItemTotal = 0;
-		for (const priceElement of priceOfElements) {
-			const priceText = await priceElement.getText();
-			const priceValue = parseFloat(priceText.replace("$", ""));
-			calculatedItemTotal += priceValue;
-		}
+		const subtotal = await getPriceValue(
+			By.css('[data-test="subtotal-label"]'),
+		);
+		const tax = await getPriceValue(By.css('[data-test="tax-label"]'));
+		const total = await getPriceValue(By.css('[data-test="total-label"]'));
 
-		// round the sum to 2 decimal places to prevent floating point issues
-		calculatedItemTotal = Math.round(calculatedItemTotal * 100) / 100;
+		const expectedTax = Math.round(subtotal * 0.08 * 100) / 100;
+		const expectedTotal = Math.round((subtotal + tax) * 100) / 100;
 
-		// get UI values
-		const subtotalText = await this.driver
-			.findElement(By.css('[data-test="subtotal-label"]'))
-			.getText();
-		const subtotalValue = parseFloat(subtotalText.replace(/[^0-9.]/g, ""));
+		this.verifyValues(roundedSum, subtotal, "Subtotal");
+		this.verifyValues(tax, expectedTax, "Tax");
+		this.verifyValues(total, expectedTotal, "Grand Total");
 
-		const taxText = await this.driver
-			.findElement(By.css('[data-test="tax-label"]'))
-			.getText();
-		const taxValue = parseFloat(taxText.replace(/[^0-9.]/g, ""));
-
-		const totalText = await this.driver
-			.findElement(By.css('[data-test="total-label"]'))
-			.getText();
-		const totalValue = parseFloat(totalText.replace(/[^0-9.]/g, ""));
-
-		//verify sum of items equals the displayed subtotal
-		if (calculatedItemTotal !== subtotalValue) {
-			throw new Error(
-				`Subtotal Mismatch: Calculated sum of items is ${calculatedItemTotal}, but UI shows ${subtotalValue}`,
-			);
-		} else {
-			console.log(`✅ Subtotal verified: ${subtotalValue}`);
-		}
-
-		// verify tax is 8% of subtotal
-		if (taxValue !== Math.round(subtotalValue * 0.08 * 100) / 100) {
-			throw new Error(
-				`Tax Mismatch: Expected tax to be ${Math.round(subtotalValue * 0.08 * 100) / 100}, but UI shows ${taxValue}`,
-			);
-		} else {
-			console.log(`✅ Tax verified: ${taxValue}`);
-		}
-
-		// verify subtotal + tax equals the displayed total
-		const expectedTotal = Math.round((subtotalValue + taxValue) * 100) / 100;
-		if (totalValue !== expectedTotal) {
-			throw new Error(
-				`Grand Total Mismatch: ${subtotalValue} + ${taxValue} should be ${expectedTotal}, but UI shows ${totalValue}`,
-			);
-		} else {
-			console.log(`✅ Total verified: ${totalValue}`);
-		}
-
-		console.log("✅ Price verification completed successful");
+		console.log("✅ All price verifications completed successfully");
 	}
 
 	async clickFinishButton(): Promise<void> {
