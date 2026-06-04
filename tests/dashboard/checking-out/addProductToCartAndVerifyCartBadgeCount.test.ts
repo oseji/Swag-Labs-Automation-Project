@@ -26,7 +26,7 @@ describe("Add product to cart and verify cart badge count", () => {
         .slice(0, 3);
 
     after("Quit browser", async () => {
-        if (driver) await driver.quit;
+        if (driver) await driver.quit();
     });
 
     it("should verify that adding random products to the cart updates the cart badge count to match the number of items added", async () => {

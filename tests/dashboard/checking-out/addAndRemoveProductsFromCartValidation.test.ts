@@ -16,35 +16,40 @@ describe("Add and remove products from cart", () => {
     });
 
     it("should verify that adding and removing products from the cart updates the cart badge count correctly", async () => {
-        await step("Launch browser and log in", async () => {
-            driver = await createDriverAndLogin(
-                process.env.USER_NAME!,
-                process.env.PASSWORD!,
+        try {
+            await step("Launch browser and log in", async () => {
+                driver = await createDriverAndLogin(
+                    process.env.USER_NAME!,
+                    process.env.PASSWORD!,
+                );
+            });
+
+            await step(
+                "Add 'Sauce Labs Backpack' and 'Sauce Labs Bike Light' to the cart",
+                async () => {
+                    await dashboardPageData.clickAddToCartButtonOnProduct([
+                        "sauce labs backpack",
+                        "sauce labs bike light",
+                    ]);
+                },
             );
-        });
 
-        await step(
-            "Add 'Sauce Labs Backpack' and 'Sauce Labs Bike Light' to the cart",
-            async () => {
-                await dashboardPageData.clickAddToCartButtonOnProduct([
+            await step("Verify cart badge shows 2 items", async () => {
+                await navigationPageData.verifyCartBadgeCount(2);
+            });
+
+            await step("Remove 'Sauce Labs Backpack' from the cart", async () => {
+                await dashboardPageData.clickRemoveFromCartButtonOnProduct([
                     "sauce labs backpack",
-                    "sauce labs bike light",
                 ]);
-            },
-        );
+            });
 
-        await step("Verify cart badge shows 2 items", async () => {
-            await navigationPageData.verifyCartBadgeCount(2);
-        });
-
-        await step("Remove 'Sauce Labs Backpack' from the cart", async () => {
-            await dashboardPageData.clickRemoveFromCartButtonOnProduct([
-                "sauce labs backpack",
-            ]);
-        });
-
-        await step("Verify cart badge updates to 1 item", async () => {
-            await navigationPageData.verifyCartBadgeCount(1);
-        });
+            await step("Verify cart badge updates to 1 item", async () => {
+                await navigationPageData.verifyCartBadgeCount(1);
+            });
+        } catch (error) {
+            console.error("❌ Add and remove products from cart test failed:", error);
+            throw error;
+        }
     });
 });
