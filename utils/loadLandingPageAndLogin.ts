@@ -6,101 +6,148 @@ import { Options } from "selenium-webdriver/chrome";
 import { WebDriver, Builder } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
 
+import { step } from "allure-js-commons";
+
 export const loadLandingPageAndLogin = async (
-	testType:
-		| "happy path"
-		| "negative path"
-		| "no username"
-		| "protected route access without login",
-	username: string,
-	password: string,
+    testType:
+        | "happy path"
+        | "negative path"
+        | "no username"
+        | "protected route access without login",
+    username: string,
+    password: string,
 ) => {
-	let driver: WebDriver | undefined;
-	const timeout = parseInt(process.env.TIMEOUT! || "20000");
-	const chromeOptions = new Options();
+    let driver: WebDriver | undefined;
+    const timeout = parseInt(process.env.TIMEOUT! || "20000");
+    const chromeOptions = new Options();
 
-	chromeOptions.setUserPreferences({
-		credentials_enable_service: false,
-		"profile.password_manager_enabled": false,
-	});
+    chromeOptions.setUserPreferences({
+        credentials_enable_service: false,
+        "profile.password_manager_enabled": false,
+    });
 
-	try {
-		driver = await new Builder()
-			.forBrowser("chrome")
-			.setChromeOptions(chromeOptions)
-			.build();
-		const landingPageData = new LandingPage(driver, timeout);
+    try {
+        await step("launch chrome browser", async () => {
+            driver = await new Builder()
+                .forBrowser("chrome")
+                .setChromeOptions(chromeOptions)
+                .build();
+        });
 
-		if (testType === "happy path") {
-			await landingPageData.waitForLandingPageAndLogin(username, password);
-			await landingPageData.waitForDashboardToLoad();
+        const landingPageData = new LandingPage(driver!, timeout);
 
-			const currentUrl = await driver.getCurrentUrl();
-			expect(currentUrl).to.equal(
-				process.env.DASHBOARD_URL,
-				"User should be redirected to dashboard after valid login",
-			);
+        if (testType === "happy path") {
+            await step("navigate to landing page and loq", async () => {
+                await landingPageData.waitForLandingPageAndLogin(
+                    username,
+                    password,
+                );
+            });
 
-			console.log(`✅ completed happy path test for load landing page and login`);
-		}
+            await step("wait for dashboard to load", async () => {
+                await landingPageData.waitForDashboardToLoad();
+            });
 
-		if (testType === "negative path") {
-			await landingPageData.waitForLandingPageAndLogin("username", password);
-			await landingPageData.waitForNegativePathErrorMessage();
+            await step("verify user is redirected to dashboard", async () => {
+                const currentUrl = await driver!.getCurrentUrl();
+                expect(currentUrl).to.equal(
+                    process.env.DASHBOARD_URL,
+                    "User should be redirected to dashboard after valid login",
+                );
+            });
+        }
 
-			const errorEl = await driver.findElement(
-				landingPageData.locators.negativePathErrorMessage,
-			);
-			const errorText = await errorEl.getText();
-			expect(errorText).to.include(
-				"do not match any user",
-				"Invalid credentials should show matching error message",
-			);
+        if (testType === "negative path") {
+            await step("navigate to landing page and login", async () => {
+                await landingPageData.waitForLandingPageAndLogin(
+                    "username",
+                    password,
+                );
+            });
 
-			console.log(
-				`✅ completed negative path test for load landing page and login`,
-			);
-		}
+            await step(
+                "wait for negative path error message to load",
+                async () => {
+                    await landingPageData.waitForNegativePathErrorMessage();
+                },
+            );
 
-		if (testType === "no username") {
-			await landingPageData.waitForLandingPageAndLogin("", password);
-			await landingPageData.waitForNoUsernameErrorMessage();
+            await step(
+                "verify negative path error message is displayed",
+                async () => {
+                    const errorEl = await driver!.findElement(
+                        landingPageData.locators.negativePathErrorMessage,
+                    );
+                    const errorText = await errorEl.getText();
+                    expect(errorText).to.include(
+                        "do not match any user",
+                        "Invalid credentials should show matching error message",
+                    );
+                },
+            );
 
-			const errorEl = await driver.findElement(
-				landingPageData.locators.noUserNameErrorMessage,
-			);
-			const errorText = await errorEl.getText();
-			expect(errorText).to.include(
-				"Username is required",
-				"Empty username should show required-username error",
-			);
+            console.log(
+                `✅ completed negative path test for load landing page and login`,
+            );
+        }
 
-			console.log(`✅ completed no username test for load landing page and login`);
-		}
+        if (testType === "no username") {
+            await step(
+                "navigate to landing page and login with no username",
+                async () => {
+                    await landingPageData.waitForLandingPageAndLogin(
+                        "",
+                        password,
+                    );
+                },
+            );
 
-		if (testType === "protected route access without login") {
-			await landingPageData.openLandingPageAndWaitForItToLoad();
+            await step(
+                "wait for no username error message to load",
+                async () => {
+                    await landingPageData.waitForNoUsernameErrorMessage();
+                },
+            );
 
-			await driver.get(process.env.DASHBOARD_URL!);
+            await step(
+                "verify no username error message is displayed",
+                async () => {
+                    const errorEl = await driver!.findElement(
+                        landingPageData.locators.noUserNameErrorMessage,
+                    );
+                    const errorText = await errorEl.getText();
+                    expect(errorText).to.include(
+                        "Username is required",
+                        "Empty username should show required-username error",
+                    );
+                },
+            );
+        }
 
-			await driver.sleep(3000);
-			await landingPageData.waitForProtectedRouteErrorMessage();
+        if (testType === "protected route access without login") {
+            await step("navigate to landing page and login", async () => {
+                await landingPageData.openLandingPageAndWaitForItToLoad();
+            });
 
-			const errorEl = await driver.findElement(
-				landingPageData.locators.protectedRouteErrorMessage,
-			);
-			const errorText = await errorEl.getText();
-			expect(errorText).to.include(
-				"logged in",
-				"Protected route should show login-required message",
-			);
+            await step("navigate to dashboard", async () => {
+                await driver!.get(process.env.DASHBOARD_URL!);
+            });
 
-			console.log("✅ Protected route access without login validation completed.");
-		}
-	} catch (error) {
-		console.error(`❌ ${testType} test failed:`, error);
-		throw error;
-	} finally {
-		if (driver) await driver.quit();
-	}
+            await step(
+                "wait for protected route error message to load",
+                async () => {
+                    await landingPageData.waitForProtectedRouteErrorMessage();
+                },
+            );
+
+            console.log(
+                `✅ completed protected route access without login test for load landing page and login`,
+            );
+        }
+    } catch (error) {
+        console.error(`❌ ${testType} test failed:`, error);
+        throw error;
+    } finally {
+        if (driver) await driver.quit();
+    }
 };
