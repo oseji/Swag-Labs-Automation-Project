@@ -1,10 +1,9 @@
 {
     "name": "swaglabs-automation",
     "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
+    "description": "E2E UI automation suite for Swag Labs (saucedemo.com)",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test:all": "npm run test:auth && npm run test:products && npm run test:cart && npm run test:menu",
         "test:auth": "npm run test:auth:login && npm run test:auth:blank && npm run test:auth:wrong",
         "test:auth:login": "mocha tests/authentication/loginWithValidCredentials.test.ts",
         "test:auth:blank": "mocha tests/authentication/loginWithEmptyUsernameValidation.test.ts",
@@ -26,23 +25,17 @@
         "test:menu:visibility": "mocha tests/dashboard/menu/menuVisibilityAndContentValidation.test.ts",
         "test:menu:reset": "mocha tests/dashboard/menu/resetAppStateFromMenuValidation.test.ts",
         "test:menu:about": "mocha tests/dashboard/menu/navigateToAboutPageFromMenu.test.ts",
-        "test:all": "npm run test:auth && npm run test:products && npm run test:cart && npm run test:sort && npm run test:menu",
-        "report:auth": "rm -rf allure-results allure-report && npm run test:auth && allure generate allure-results -o allure-report && allure open allure-report",
-        "report:cart": "rm -rf allure-results allure-report && npm run test:cart && allure generate allure-results -o allure-report && allure open allure-report",
-        "report:sort": "rm -rf allure-results allure-report && npm run test:sort && allure generate allure-results -o allure-report && allure open allure-report",
-        "report:products": "rm -rf allure-results allure-report && npm run test:products && allure generate allure-results -o allure-report && allure open allure-report",
-        "report:menu": "rm -rf allure-results allure-report && npm run test:menu && allure generate allure-results -o allure-report && allure open allure-report",
-        "report:all": "rm -rf allure-results allure-report && npm run test:all && allure generate allure-results -o allure-report && allure open allure-report"
+        "report:auth": "rimraf allure-results allure-report && npm run test:auth && allure generate allure-results -o allure-report && allure open allure-report",
+        "report:cart": "rimraf allure-results allure-report && npm run test:cart && allure generate allure-results -o allure-report && allure open allure-report",
+        "report:sort": "rimraf allure-results allure-report && npm run test:sort && allure generate allure-results -o allure-report && allure open allure-report",
+        "report:products": "rimraf allure-results allure-report && npm run test:products && allure generate allure-results -o allure-report && allure open allure-report",
+        "report:menu": "rimraf allure-results allure-report && npm run test:menu && allure generate allure-results -o allure-report && allure open allure-report",
+        "report:all": "rimraf allure-results allure-report && npm run test:all && allure generate allure-results -o allure-report && allure open allure-report"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "type": "commonjs",
-    "dependencies": {
-        "chai": "^6.2.2",
-        "dotenv": "^17.2.3",
-        "selenium-webdriver": "^4.39.0"
-    },
     "devDependencies": {
         "@types/chai": "^5.2.3",
         "@types/mocha": "^10.0.10",
@@ -50,7 +43,11 @@
         "@types/selenium-webdriver": "^4.35.4",
         "allure-js-commons": "^3.9.0",
         "allure-mocha": "^3.9.0",
+        "chai": "^6.2.2",
+        "dotenv": "^17.2.3",
         "mocha": "^11.7.5",
+        "rimraf": "^6.1.3",
+        "selenium-webdriver": "^4.39.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3"
     }
