@@ -47,6 +47,10 @@ describe("Reset app state from menu", () => {
                 await navigationPageData.verifyCartBadgeCount(randomProducts.length);
             });
 
+            await step("open side menu", async () => {
+                await navigationPageData.openSideMenu();
+            });
+
             await step("reset app state from side menu", async () => {
                 await navigationPageData.clickResetAppStateMenuButton();
             });

@@ -8,8 +8,6 @@ import { step } from "allure-js-commons";
 describe("Add and remove products from cart", () => {
     let driver: WebDriver | undefined;
     const timeout = parseInt(process.env.TIMEOUT!);
-    const dashboardPageData = new DashboardPage(driver!, timeout);
-    const navigationPageData = new NavigationBarPage(driver!, timeout);
 
     after("Quit browser", async () => {
         if (driver) await driver.quit();
@@ -23,6 +21,9 @@ describe("Add and remove products from cart", () => {
                     process.env.PASSWORD!,
                 );
             });
+
+            const dashboardPageData = new DashboardPage(driver!, timeout);
+            const navigationPageData = new NavigationBarPage(driver!, timeout);
 
             await step(
                 "Add 'Sauce Labs Backpack' and 'Sauce Labs Bike Light' to the cart",

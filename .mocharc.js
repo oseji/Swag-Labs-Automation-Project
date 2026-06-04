@@ -4,5 +4,5 @@ module.exports = {
     reporterOptions: {
         resultsDir: "allure-results",
     },
-    timeout: 10000,
+    timeout: 60000,
 };

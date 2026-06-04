@@ -9,8 +9,6 @@ import { step } from "allure-js-commons";
 describe("Add product to cart and verify cart badge count", () => {
     let driver: WebDriver | undefined;
     const timeout = parseInt(process.env.TIMEOUT!);
-    const dashboardPageData = new DashboardPage(driver!, timeout);
-    const navigationPageData = new NavigationBarPage(driver!, timeout);
 
     const products = [
         "sauce labs backpack",
@@ -38,6 +36,9 @@ describe("Add product to cart and verify cart badge count", () => {
                 );
             });
 
+            const dashboardPageData = new DashboardPage(driver!, timeout);
+            const navigationPageData = new NavigationBarPage(driver!, timeout);
+
             await step("add random products to cart", async () => {
                 await dashboardPageData.clickAddToCartButtonOnProduct(
                     randomProducts,
@@ -50,10 +51,7 @@ describe("Add product to cart and verify cart badge count", () => {
                 );
             });
         } catch (error) {
-            console.error(
-                "❌ Checkout flow with form error and price validation failed:",
-                error,
-            );
+            console.error("❌ Add product to cart and verify cart badge count test failed:", error);
             throw error;
         }
     });
