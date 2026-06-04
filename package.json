@@ -29,6 +29,7 @@
         "test:all": "npm run test:auth && npm run test:products && npm run test:cart && npm run test:sort && npm run test:menu",
         "report:auth": "rm -rf allure-results allure-report && npm run test:auth && allure generate allure-results -o allure-report && allure open allure-report",
         "report:cart": "rm -rf allure-results allure-report && npm run test:cart && allure generate allure-results -o allure-report && allure open allure-report",
+        "report:sort": "rm -rf allure-results allure-report && npm run test:sort && allure generate allure-results -o allure-report && allure open allure-report",
         "report:products": "rm -rf allure-results allure-report && npm run test:products && allure generate allure-results -o allure-report && allure open allure-report",
         "report:menu": "rm -rf allure-results allure-report && npm run test:menu && allure generate allure-results -o allure-report && allure open allure-report",
         "report:all": "rm -rf allure-results allure-report && npm run test:all && allure generate allure-results -o allure-report && allure open allure-report"

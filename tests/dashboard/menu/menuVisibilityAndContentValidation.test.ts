@@ -1,35 +1,43 @@
 /*verifies that the side menu opens and displays the expected menu items and content.*/
 import { expect } from "chai";
+import { describe, it, after } from "mocha";
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
-import { WebDriver } from "selenium-webdriver";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
+import { WebDriver } from "selenium-webdriver";
+import { step } from "allure-js-commons";
 
-export const openMenuAndVerifyContent = async () => {
-	let driver: WebDriver | undefined;
-	const timeout = parseInt(process.env.TIMEOUT! || "20000");
+describe("Menu visibility and content validation", () => {
+    let driver: WebDriver | undefined;
+    const timeout = parseInt(process.env.TIMEOUT! || "20000");
 
-	try {
-		driver = await createDriverAndLogin(
-			process.env.USER_NAME!,
-			process.env.PASSWORD!,
-		);
+    after("Quit browser", async () => {
+        if (driver) await driver.quit();
+    });
 
-		const navigationBarPageData = new NavigationBarPage(driver, timeout);
-		await navigationBarPageData.openMenuAndVerifyContent();
+    it("should verify that the side menu opens and displays all expected menu items", async () => {
+        try {
+            await step("launch browser and log in", async () => {
+                driver = await createDriverAndLogin(
+                    process.env.USER_NAME!,
+                    process.env.PASSWORD!,
+                );
+            });
 
-		expect(await driver.getCurrentUrl()).to.equal(
-			process.env.DASHBOARD_URL,
-			"Menu test should start from dashboard",
-		);
-		console.log("✅ Menu visibility and content validation completed.");
-	} catch (error) {
-		console.error("❌ Menu visibility and content validation failed:", error);
-		throw error;
-	} finally {
-		if (driver) {
-			await driver.quit();
-		}
-	}
-};
+            const navigationBarPageData = new NavigationBarPage(driver!, timeout);
 
-openMenuAndVerifyContent();
+            await step("open side menu and verify all menu items are visible", async () => {
+                await navigationBarPageData.openMenuAndVerifyContent();
+            });
+
+            await step("verify current url is the dashboard", async () => {
+                expect(await driver!.getCurrentUrl()).to.equal(
+                    process.env.DASHBOARD_URL,
+                    "Menu test should start from dashboard",
+                );
+            });
+        } catch (error) {
+            console.error("❌ Menu visibility and content validation failed:", error);
+            throw error;
+        }
+    });
+});

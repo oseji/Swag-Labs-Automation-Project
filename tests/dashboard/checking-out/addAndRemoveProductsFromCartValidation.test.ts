@@ -1,42 +1,50 @@
-/*verifies adding products to the cart, that the cart badge count updates correctly, and that removing a product updates the count.*/
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
+import { describe, it, after } from "mocha";
+import { step } from "allure-js-commons";
 
-const addProductToCartAndRemove = async () => {
-	let driver: WebDriver | undefined;
-	const timeout = parseInt(process.env.TIMEOUT!);
+describe("Add and remove products from cart", () => {
+    let driver: WebDriver | undefined;
+    const timeout = parseInt(process.env.TIMEOUT!);
+    const dashboardPageData = new DashboardPage(driver!, timeout);
+    const navigationPageData = new NavigationBarPage(driver!, timeout);
 
-	try {
-		driver = await createDriverAndLogin(
-			process.env.USER_NAME!,
-			process.env.PASSWORD!,
-		);
+    after("Quit browser", async () => {
+        if (driver) await driver.quit();
+    });
 
-		const dashboardPageData = new DashboardPage(driver, timeout);
-		const navigationPageData = new NavigationBarPage(driver, timeout);
+    it("should verify that adding and removing products from the cart updates the cart badge count correctly", async () => {
+        await step("Launch browser and log in", async () => {
+            driver = await createDriverAndLogin(
+                process.env.USER_NAME!,
+                process.env.PASSWORD!,
+            );
+        });
 
-		await dashboardPageData.clickAddToCartButtonOnProduct([
-			"sauce labs backpack",
-			"sauce labs bike light",
-		]);
-		await navigationPageData.verifyCartBadgeCount(2);
+        await step(
+            "Add 'Sauce Labs Backpack' and 'Sauce Labs Bike Light' to the cart",
+            async () => {
+                await dashboardPageData.clickAddToCartButtonOnProduct([
+                    "sauce labs backpack",
+                    "sauce labs bike light",
+                ]);
+            },
+        );
 
-		await dashboardPageData.clickRemoveFromCartButtonOnProduct([
-			"sauce labs backpack",
-		]);
-		await navigationPageData.verifyCartBadgeCount(1);
+        await step("Verify cart badge shows 2 items", async () => {
+            await navigationPageData.verifyCartBadgeCount(2);
+        });
 
-		console.log("✅ Add and remove products from cart validation completed.");
-	} catch (error) {
-		console.error(
-			"❌ Add and remove products from cart validation failed:",
-			error,
-		);
-	} finally {
-		if (driver) await driver.quit();
-	}
-};
+        await step("Remove 'Sauce Labs Backpack' from the cart", async () => {
+            await dashboardPageData.clickRemoveFromCartButtonOnProduct([
+                "sauce labs backpack",
+            ]);
+        });
 
-addProductToCartAndRemove();
+        await step("Verify cart badge updates to 1 item", async () => {
+            await navigationPageData.verifyCartBadgeCount(1);
+        });
+    });
+});

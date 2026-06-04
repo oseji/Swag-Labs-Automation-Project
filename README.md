@@ -13,6 +13,7 @@ End-to-end (E2E) UI automation for [Sauce Labs Demo](https://www.saucedemo.com) 
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running Tests](#running-tests)
+- [Allure Reports](#allure-reports)
 - [Test Suites](#test-suites)
 - [Architecture](#architecture)
 - [Environment Variables](#environment-variables)
@@ -38,6 +39,9 @@ Tests are written in **TypeScript**, use **Chrome** via Selenium WebDriver, and 
 | ---------------------- | ---------------------------------------------------- |
 | **TypeScript**         | Type-safe test and page code                         |
 | **Selenium WebDriver** | Browser automation (Chrome)                          |
+| **Mocha**              | Test runner with `describe`/`it` structure           |
+| **Chai**               | Assertion library                                    |
+| **Allure**             | Test reporting with step-level detail                |
 | **dotenv**             | Environment and config (URLs, credentials, timeouts) |
 | **ts-node**            | Run TypeScript tests without a separate compile step |
 
@@ -82,6 +86,7 @@ SwagLabs automation/
 - **Node.js** (v16 or higher recommended)
 - **Chrome** browser installed (Selenium uses it for automation)
 - **npm** (comes with Node.js)
+- **Allure CLI** — required to generate and open HTML reports (see [Allure Reports](#allure-reports))
 
 ChromeDriver is fetched automatically by Selenium; no separate install is required for typical use.
 
@@ -131,7 +136,7 @@ Use these credentials only on the public demo site; do not commit `.env` or real
 
 ## Running Tests
 
-Tests are run via **npm scripts** using `ts-node`, so no separate compile step is needed for development.
+Tests are run via **npm scripts** using Mocha + ts-node, so no separate compile step is needed for development.
 
 ### Run all tests
 
@@ -153,8 +158,18 @@ This runs, in order: auth → products (details + sort) → cart → menu.
 | `npm run test:auth:protected-route` | Accessing dashboard without login                                           |
 | `npm run test:products`             | Product details + all sort tests                                            |
 | `npm run test:sort`                 | All sorting tests (A–Z, Z–A, price low–high, high–low)                      |
+| `npm run test:sort:az`              | Sort A–Z only                                                               |
+| `npm run test:sort:za`              | Sort Z–A only                                                               |
+| `npm run test:sort:price-low`       | Sort price low–high only                                                    |
+| `npm run test:sort:price-high`      | Sort price high–low only                                                    |
 | `npm run test:cart`                 | Cart add, remove, and checkout flow                                         |
+| `npm run test:cart:add`             | Add to cart and verify badge count                                          |
+| `npm run test:cart:remove`          | Add and remove products, verify badge updates                               |
+| `npm run test:cart:checkout`        | Full checkout flow with form and price validation                           |
 | `npm run test:menu`                 | Menu visibility, reset app state, About navigation                          |
+| `npm run test:menu:visibility`      | Menu visibility and content only                                            |
+| `npm run test:menu:reset`           | Reset app state only                                                        |
+| `npm run test:menu:about`           | About page navigation only                                                  |
 
 ### Run a single test file
 
@@ -165,6 +180,45 @@ npm run test:auth:login
 ```
 
 To run any other single test, use the corresponding script name from the `scripts` section.
+
+---
+
+## Allure Reports
+
+Every test in this suite is instrumented with **Allure** step-level reporting. Each `it` block is broken into named steps (e.g. "launch browser and log in", "verify cart badge count") so you can see exactly where a test passed or failed in the Allure HTML report.
+
+### Install Allure CLI
+
+Allure CLI is required to generate and open the HTML report. Install it once globally:
+
+```bash
+# macOS (Homebrew)
+brew install allure
+
+# npm (cross-platform)
+npm install -g allure-commandline
+```
+
+### Generate and open a report
+
+Use the `report:*` scripts to run a test suite, generate the report, and open it in one command:
+
+| Command                  | Runs and reports on                     |
+| ------------------------ | --------------------------------------- |
+| `npm run report:auth`    | All authentication tests                |
+| `npm run report:cart`    | All cart & checkout tests               |
+| `npm run report:sort`    | All product sorting tests               |
+| `npm run report:products`| Product details + all sorting tests     |
+| `npm run report:menu`    | All menu tests                          |
+| `npm run report:all`     | The full test suite                     |
+
+Each script:
+1. Clears any previous `allure-results` and `allure-report` directories
+2. Runs the relevant tests (results are written to `allure-results/`)
+3. Generates a static HTML report in `allure-report/`
+4. Opens the report in your browser
+
+> **Note:** `allure-report/` is gitignored. `allure-results/` is also gitignored so raw result files are not committed.
 
 ---
 
@@ -216,6 +270,11 @@ This keeps tests readable and reduces duplication when the UI changes.
 - **`loadLandingPageAndLogin`** — Handles different login scenarios (happy path, wrong credentials, blank username, protected route) and **quits the driver** when done; used by authentication tests.
 - **`webElementHelpers`** — Shared `waitAndClick`, `waitAndInput`, and `waitForElement` using the configured timeout for stable waits.
 - **`sortProducts`** — Centralized logic for “sort and assert order” used by the product-sorting tests.
+- **`clickOnAMenuButton`** — Handles opening the side menu and clicking a named button (“about”, “logout”, “all items”, “reset app state”), including assertions specific to each action.
+
+### Allure reporting
+
+Every test uses the **`step()`** function from `allure-js-commons` to annotate meaningful phases of each test (e.g. “launch browser and log in”, “verify cart badge count”). Mocha is configured in `.mocharc.js` to use `allure-mocha` as its reporter, which writes raw result files to `allure-results/` after each run. The `report:*` npm scripts then call the Allure CLI to convert those results into a navigable HTML report.
 
 ### Driver and browser
 
