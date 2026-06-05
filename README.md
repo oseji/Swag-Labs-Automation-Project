@@ -185,7 +185,7 @@ To run any other single test, use the corresponding script name from the `script
 
 ## Allure Reports
 
-Every test in this suite is instrumented with **Allure** step-level reporting. Each `it` block is broken into named steps (e.g. "launch browser and log in", "verify cart badge count") so you can see exactly where a test passed or failed in the Allure HTML report.
+Every test in this suite is instrumented with **Allure** step-level reporting. Each `it` block is broken into named steps (e.g. "launch browser and log in", "verify cart badge count") so you can see exactly where a test passed or failed in the Allure HTML report. When a test fails, a **screenshot is automatically captured and attached** to the Allure report so you can see the browser state at the point of failure.
 
 ### Install Allure CLI
 
@@ -275,6 +275,8 @@ This keeps tests readable and reduces duplication when the UI changes.
 ### Allure reporting
 
 Every test uses the **`step()`** function from `allure-js-commons` to annotate meaningful phases of each test (e.g. “launch browser and log in”, “verify cart badge count”). Mocha is configured in `.mocharc.js` to use `allure-mocha` as its reporter, which writes raw result files to `allure-results/` after each run. The `report:*` npm scripts then call the Allure CLI to convert those results into a navigable HTML report.
+
+When a test fails, the catch block calls `attachScreenshotOnFailure` (`utils/allure/attachScreenShotOnFailure.helper.ts`), which takes a screenshot via the WebDriver and attaches it as a PNG to the Allure report. This means every failure in the report includes a visual snapshot of the browser at the moment the error occurred. Labels (severity, tag, epic, feature, story) are applied per test via `setAllureLabels` (`utils/allure/setAllureLabels.helper.ts`) so reports can be filtered and grouped meaningfully.
 
 ### Driver and browser
 
