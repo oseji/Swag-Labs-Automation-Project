@@ -80,7 +80,7 @@ export class NavigationBarPage {
 			"about button on the menu",
 		);
 
-		await this.driver.wait(until.urlIs("https://saucelabs.com/"), this.timeout);
+		await this.driver.wait(until.urlIs(process.env.ABOUT_PAGE_URL!), this.timeout);
 		console.log("opened about page");
 	}
 
@@ -92,7 +92,7 @@ export class NavigationBarPage {
 		);
 
 		await this.driver.wait(
-			until.urlIs("https://www.saucedemo.com/"),
+			until.urlIs(process.env.LANDING_PAGE_URL!),
 			this.timeout,
 		);
 		console.log("successfully logged out");

@@ -111,23 +111,40 @@ ChromeDriver is fetched automatically by Selenium; no separate install is requir
 
 Create a `.env` file in the project root with at least:
 
-| Variable           | Description                | Example                                    |
-| ------------------ | -------------------------- | ------------------------------------------ |
-| `LANDING_PAGE_URL` | Login page URL             | `https://www.saucedemo.com`                |
-| `DASHBOARD_URL`    | URL after successful login | `https://www.saucedemo.com/inventory.html` |
-| `TIMEOUT`          | Default wait timeout (ms)  | `20000`                                    |
-| `USER_NAME`        | Valid Swag Labs username   | `standard_user`                            |
-| `PASSWORD`         | Valid Swag Labs password   | `secret_sauce`                             |
+| Variable                | Description                          | Example                                             |
+| ----------------------- | ------------------------------------ | --------------------------------------------------- |
+| `LANDING_PAGE_URL`      | Login page URL                       | `https://www.saucedemo.com/`                        |
+| `DASHBOARD_URL`         | URL after successful login           | `https://www.saucedemo.com/inventory.html`          |
+| `CART_URL`              | Cart page URL                        | `https://www.saucedemo.com/cart.html`               |
+| `CHECKOUT_STEP_ONE_URL` | Checkout step one URL                | `https://www.saucedemo.com/checkout-step-one.html`  |
+| `CHECKOUT_STEP_TWO_URL` | Checkout step two URL                | `https://www.saucedemo.com/checkout-step-two.html`  |
+| `CHECKOUT_COMPLETE_URL` | Checkout complete page URL           | `https://www.saucedemo.com/checkout-complete.html`  |
+| `ABOUT_PAGE_URL`        | Sauce Labs about page URL            | `https://saucelabs.com/`                            |
+| `TIMEOUT`               | Default wait timeout (ms)            | `20000`                                             |
+| `USER_NAME`             | Valid Swag Labs username             | `standard_user`                                     |
+| `PASSWORD`              | Valid Swag Labs password             | `secret_sauce`                                      |
+| `CHECKOUT_FIRST_NAME`   | First name used in checkout form     | `ose`                                               |
+| `CHECKOUT_LAST_NAME`    | Last name used in checkout form      | `oziegbe`                                           |
+| `CHECKOUT_POSTAL_CODE`  | Postal code used in checkout form    | `0701995`                                           |
 
 Example `.env`:
 
 ```env
-LANDING_PAGE_URL=https://www.saucedemo.com
+LANDING_PAGE_URL=https://www.saucedemo.com/
 DASHBOARD_URL=https://www.saucedemo.com/inventory.html
+CART_URL=https://www.saucedemo.com/cart.html
+CHECKOUT_STEP_ONE_URL=https://www.saucedemo.com/checkout-step-one.html
+CHECKOUT_STEP_TWO_URL=https://www.saucedemo.com/checkout-step-two.html
+CHECKOUT_COMPLETE_URL=https://www.saucedemo.com/checkout-complete.html
+ABOUT_PAGE_URL=https://saucelabs.com/
 TIMEOUT=20000
 
 USER_NAME=standard_user
 PASSWORD=secret_sauce
+
+CHECKOUT_FIRST_NAME=ose
+CHECKOUT_LAST_NAME=oziegbe
+CHECKOUT_POSTAL_CODE=0701995
 ```
 
 Use these credentials only on the public demo site; do not commit `.env` or real credentials.
@@ -290,13 +307,21 @@ When a test fails, the catch block calls `attachScreenshotOnFailure` (`utils/all
 
 Summary of variables used:
 
-| Variable           | Required             | Purpose                                               |
-| ------------------ | -------------------- | ----------------------------------------------------- |
-| `LANDING_PAGE_URL` | Yes                  | Login page to open                                    |
-| `DASHBOARD_URL`    | Yes                  | Expected URL after login and for protected-route test |
-| `TIMEOUT`          | No (default 20000)   | Global wait timeout in ms                             |
-| `USER_NAME`        | Yes (for most tests) | Swag Labs username (e.g. `standard_user`)             |
-| `PASSWORD`         | Yes (for most tests) | Swag Labs password (e.g. `secret_sauce`)              |
+| Variable                | Required             | Purpose                                               |
+| ----------------------- | -------------------- | ----------------------------------------------------- |
+| `LANDING_PAGE_URL`      | Yes                  | Login page to open                                    |
+| `DASHBOARD_URL`         | Yes                  | Expected URL after login and for protected-route test |
+| `CART_URL`              | Yes                  | Cart page URL used for navigation assertions          |
+| `CHECKOUT_STEP_ONE_URL` | Yes                  | Checkout info page URL used for navigation assertions |
+| `CHECKOUT_STEP_TWO_URL` | Yes                  | Checkout overview page URL used for assertions        |
+| `CHECKOUT_COMPLETE_URL` | Yes                  | Checkout complete page URL used for assertions        |
+| `ABOUT_PAGE_URL`        | Yes                  | Sauce Labs site URL used for About menu assertion     |
+| `TIMEOUT`               | No (default 20000)   | Global wait timeout in ms                             |
+| `USER_NAME`             | Yes (for most tests) | Swag Labs username (e.g. `standard_user`)             |
+| `PASSWORD`              | Yes (for most tests) | Swag Labs password (e.g. `secret_sauce`)              |
+| `CHECKOUT_FIRST_NAME`   | Yes                  | First name entered in the checkout form               |
+| `CHECKOUT_LAST_NAME`    | Yes                  | Last name entered in the checkout form                |
+| `CHECKOUT_POSTAL_CODE`  | Yes                  | Postal code entered in the checkout form              |
 
 Ensure `.env` is in `.gitignore` and never commit real credentials.
 

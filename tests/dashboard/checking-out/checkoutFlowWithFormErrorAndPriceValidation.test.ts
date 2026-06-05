@@ -89,9 +89,9 @@ describe("Checkout flow with form error and price validation", () => {
                 "complete checkout step one: enter customer information",
                 async () => {
                     await checkoutPageData.checkoutStepOne(
-                        "ose",
-                        "oziegbe",
-                        "0701995",
+                        process.env.CHECKOUT_FIRST_NAME!,
+                        process.env.CHECKOUT_LAST_NAME!,
+                        process.env.CHECKOUT_POSTAL_CODE!,
                     );
                 },
             );

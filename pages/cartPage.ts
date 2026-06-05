@@ -40,7 +40,7 @@ export class cartPage {
 
 	async waitForCartPageToOpen(): Promise<void> {
 		await this.driver.wait(
-			until.urlIs("https://www.saucedemo.com/cart.html"),
+			until.urlIs(process.env.CART_URL!),
 			this.timeout,
 		);
 

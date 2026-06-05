@@ -69,7 +69,7 @@ export class checkoutPage {
 	//STEP 1 ACTIONS
 	async waitForCheckoutStepOneToLoad(): Promise<void> {
 		await this.driver.wait(
-			until.urlIs("https://www.saucedemo.com/checkout-step-one.html"),
+			until.urlIs(process.env.CHECKOUT_STEP_ONE_URL!),
 			this.timeout,
 		);
 
@@ -154,7 +154,7 @@ export class checkoutPage {
 	// STEP 2 ACTIONS
 	async waitForCheckoutStepTwoToLoad(): Promise<void> {
 		await this.driver.wait(
-			until.urlIs("https://www.saucedemo.com/checkout-step-two.html"),
+			until.urlIs(process.env.CHECKOUT_STEP_TWO_URL!),
 			this.timeout,
 		);
 
@@ -220,7 +220,7 @@ export class checkoutPage {
 	// CHECK OUT COMPLETE ACTIONS
 	async waitForCheckoutCompletePageToLoad(): Promise<void> {
 		await this.driver.wait(
-			until.urlIs("https://www.saucedemo.com/checkout-complete.html"),
+			until.urlIs(process.env.CHECKOUT_COMPLETE_URL!),
 			this.timeout,
 		);
 
