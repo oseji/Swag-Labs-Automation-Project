@@ -1,7 +1,7 @@
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
 
-export class DetailsPage {
+export class ItemDetailsPage {
 	private driver: WebDriver;
 	private timeout: number;
 

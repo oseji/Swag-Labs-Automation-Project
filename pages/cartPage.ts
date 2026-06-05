@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
 
-export class cartPage {
+export class CartPage {
 	private driver: WebDriver;
 	private timeout: number;
 

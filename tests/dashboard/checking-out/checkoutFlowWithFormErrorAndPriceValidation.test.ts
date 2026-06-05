@@ -4,8 +4,8 @@ import { describe, it, after } from "mocha";
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
-import { cartPage } from "../../../pages/cartPage";
-import { checkoutPage } from "../../../pages/checkoutPage";
+import { CartPage } from "../../../pages/cartPage";
+import { CheckoutPage } from "../../../pages/checkoutPage";
 import { WebDriver } from "selenium-webdriver";
 import { step } from "allure-js-commons";
 import { setAllureLabels } from "../../../utils/allure/setAllureLabels.helper";
@@ -51,8 +51,8 @@ describe("Checkout flow with form error and price validation", () => {
 
             const dashboardPageData = new DashboardPage(driver!, timeout);
             const navigationPageData = new NavigationBarPage(driver!, timeout);
-            const cartPageData = new cartPage(driver!, timeout);
-            const checkoutPageData = new checkoutPage(driver!, timeout);
+            const cartPageData = new CartPage(driver!, timeout);
+            const checkoutPageData = new CheckoutPage(driver!, timeout);
 
             await step("add random products to cart", async () => {
                 await dashboardPageData.clickAddToCartButtonOnProduct(

@@ -5,17 +5,17 @@ import {
 	waitAndInput,
 	waitForElement,
 } from "../utils/webElementHelpers";
-import { cartPage } from "./cartPage";
+import { CartPage } from "./cartPage";
 
-export class checkoutPage {
+export class CheckoutPage {
 	private driver: WebDriver;
 	private timeout: number;
-	cartPageData: cartPage;
+	cartPageData: CartPage;
 
 	constructor(driver: WebDriver, timeout: number) {
 		this.driver = driver;
 		this.timeout = timeout;
-		this.cartPageData = new cartPage(driver, timeout);
+		this.cartPageData = new CartPage(driver, timeout);
 	}
 
 	checkoutGeneralLocators = {
