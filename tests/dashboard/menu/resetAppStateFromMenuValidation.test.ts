@@ -5,6 +5,7 @@ import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 import { step } from "allure-js-commons";
+import { setAllureLabels } from "../../../utils/allure/setAllureLabels.helper";
 import { attachScreenshotOnFailure } from "../../../utils/allure/attachScreenShotOnFailure.helper";
 
 describe("Reset app state from menu", () => {
@@ -29,6 +30,14 @@ describe("Reset app state from menu", () => {
     });
 
     it("should verify that resetting app state from the menu clears the cart and resets the badge count to zero", async () => {
+        await setAllureLabels({
+            severity: "high",
+            tag: "regression",
+            epic: "navigation",
+            feature: "menu",
+            story: "User resets app state",
+        });
+
         try {
             await step("launch browser and log in", async () => {
                 driver = await createDriverAndLogin(
