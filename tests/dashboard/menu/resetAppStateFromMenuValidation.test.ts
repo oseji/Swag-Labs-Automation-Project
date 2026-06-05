@@ -5,6 +5,7 @@ import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 import { step } from "allure-js-commons";
+import { attachScreenshotOnFailure } from "../../../utils/allure/attachScreenShotOnFailure.helper";
 
 describe("Reset app state from menu", () => {
     let driver: WebDriver | undefined;
@@ -40,12 +41,19 @@ describe("Reset app state from menu", () => {
             const navigationPageData = new NavigationBarPage(driver!, timeout);
 
             await step("add random products to cart", async () => {
-                await dashboardPageData.clickAddToCartButtonOnProduct(randomProducts);
+                await dashboardPageData.clickAddToCartButtonOnProduct(
+                    randomProducts,
+                );
             });
 
-            await step(`verify cart badge shows ${randomProducts.length} items`, async () => {
-                await navigationPageData.verifyCartBadgeCount(randomProducts.length);
-            });
+            await step(
+                `verify cart badge shows ${randomProducts.length} items`,
+                async () => {
+                    await navigationPageData.verifyCartBadgeCount(
+                        randomProducts.length,
+                    );
+                },
+            );
 
             await step("open side menu", async () => {
                 await navigationPageData.openSideMenu();
@@ -59,7 +67,18 @@ describe("Reset app state from menu", () => {
                 await navigationPageData.verifyCartBadgeCount(0);
             });
         } catch (error) {
-            console.error("❌ Reset app state from menu validation failed:", error);
+            console.error(
+                "❌ Reset app state from menu validation failed:",
+                error,
+            );
+
+            if (driver) {
+                await attachScreenshotOnFailure(
+                    driver,
+                    "failed to reset app state",
+                );
+            }
+
             throw error;
         }
     });

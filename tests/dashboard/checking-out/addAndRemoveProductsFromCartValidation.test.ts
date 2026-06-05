@@ -4,6 +4,8 @@ import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 import { describe, it, after } from "mocha";
 import { step } from "allure-js-commons";
+import { setAllureLabels } from "../../../utils/allure/setAllureLabels.helper";
+import { attachScreenshotOnFailure } from "../../../utils/allure/attachScreenShotOnFailure.helper";
 
 describe("Add and remove products from cart", () => {
     let driver: WebDriver | undefined;
@@ -14,6 +16,14 @@ describe("Add and remove products from cart", () => {
     });
 
     it("should verify that adding and removing products from the cart updates the cart badge count correctly", async () => {
+        await setAllureLabels({
+            severity: "normal",
+            tag: "regression",
+            epic: "product",
+            feature: "cart",
+            story: "User adds and removes products from cart",
+        });
+
         try {
             await step("Launch browser and log in", async () => {
                 driver = await createDriverAndLogin(
@@ -39,17 +49,31 @@ describe("Add and remove products from cart", () => {
                 await navigationPageData.verifyCartBadgeCount(2);
             });
 
-            await step("Remove 'Sauce Labs Backpack' from the cart", async () => {
-                await dashboardPageData.clickRemoveFromCartButtonOnProduct([
-                    "sauce labs backpack",
-                ]);
-            });
+            await step(
+                "Remove 'Sauce Labs Backpack' from the cart",
+                async () => {
+                    await dashboardPageData.clickRemoveFromCartButtonOnProduct([
+                        "sauce labs backpack",
+                    ]);
+                },
+            );
 
             await step("Verify cart badge updates to 1 item", async () => {
                 await navigationPageData.verifyCartBadgeCount(1);
             });
         } catch (error) {
-            console.error("❌ Add and remove products from cart test failed:", error);
+            console.error(
+                "❌ Add and remove products from cart test failed:",
+                error,
+            );
+
+            if (driver) {
+                await attachScreenshotOnFailure(
+                    driver,
+                    "failed add & remove products from cart",
+                );
+            }
+
             throw error;
         }
     });

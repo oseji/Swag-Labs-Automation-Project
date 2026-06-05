@@ -5,6 +5,8 @@ import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 import { describe, it, after } from "mocha";
 import { step } from "allure-js-commons";
+import { setAllureLabels } from "../../../utils/allure/setAllureLabels.helper";
+import { attachScreenshotOnFailure } from "../../../utils/allure/attachScreenShotOnFailure.helper";
 
 describe("Add product to cart and verify cart badge count", () => {
     let driver: WebDriver | undefined;
@@ -28,6 +30,14 @@ describe("Add product to cart and verify cart badge count", () => {
     });
 
     it("should verify that adding random products to the cart updates the cart badge count to match the number of items added", async () => {
+        await setAllureLabels({
+            severity: "normal",
+            tag: "regression",
+            epic: "product",
+            feature: "cart",
+            story: "User adds products to cart",
+        });
+
         try {
             await step("Launch browser and log in", async () => {
                 driver = await createDriverAndLogin(
@@ -51,7 +61,18 @@ describe("Add product to cart and verify cart badge count", () => {
                 );
             });
         } catch (error) {
-            console.error("❌ Add product to cart and verify cart badge count test failed:", error);
+            console.error(
+                "❌ Add product to cart and verify cart badge count test failed:",
+                error,
+            );
+
+            if (driver) {
+                await attachScreenshotOnFailure(
+                    driver,
+                    "failed add product to cart and verify badge count",
+                );
+            }
+
             throw error;
         }
     });

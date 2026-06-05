@@ -4,6 +4,7 @@ import { createDriverAndLogin } from "./createDriverAndLogin";
 import { WebDriver } from "selenium-webdriver";
 import { DashboardPage } from "../pages/dashboardPage";
 import { step } from "allure-js-commons";
+import { attachScreenshotOnFailure } from "./allure/attachScreenShotOnFailure.helper";
 
 export const sortProducts = async (
     sortType: "a to z" | "z to a" | "low to high" | "high to low",
@@ -28,15 +29,21 @@ export const sortProducts = async (
                 );
             });
 
-            await step("get all products data and verify sort order", async () => {
-                const products = await dashboardPageData.getAllProductsData();
-                const names = products.map((p) => p.name);
-                const sortedAsc = [...names].sort((a, b) => a.localeCompare(b));
-                expect(names).to.deep.equal(
-                    sortedAsc,
-                    "Product names should be sorted A to Z",
-                );
-            });
+            await step(
+                "get all products data and verify sort order",
+                async () => {
+                    const products =
+                        await dashboardPageData.getAllProductsData();
+                    const names = products.map((p) => p.name);
+                    const sortedAsc = [...names].sort((a, b) =>
+                        a.localeCompare(b),
+                    );
+                    expect(names).to.deep.equal(
+                        sortedAsc,
+                        "Product names should be sorted A to Z",
+                    );
+                },
+            );
         }
 
         if (sortType === "z to a") {
@@ -46,15 +53,21 @@ export const sortProducts = async (
                 );
             });
 
-            await step("get all products data and verify sort order", async () => {
-                const products = await dashboardPageData.getAllProductsData();
-                const names = products.map((p) => p.name);
-                const sortedDesc = [...names].sort((a, b) => b.localeCompare(a));
-                expect(names).to.deep.equal(
-                    sortedDesc,
-                    "Product names should be sorted Z to A",
-                );
-            });
+            await step(
+                "get all products data and verify sort order",
+                async () => {
+                    const products =
+                        await dashboardPageData.getAllProductsData();
+                    const names = products.map((p) => p.name);
+                    const sortedDesc = [...names].sort((a, b) =>
+                        b.localeCompare(a),
+                    );
+                    expect(names).to.deep.equal(
+                        sortedDesc,
+                        "Product names should be sorted Z to A",
+                    );
+                },
+            );
         }
 
         if (sortType === "low to high") {
@@ -64,15 +77,19 @@ export const sortProducts = async (
                 );
             });
 
-            await step("get all products data and verify sort order", async () => {
-                const products = await dashboardPageData.getAllProductsData();
-                const prices = products.map((p) => p.price);
-                const sortedAsc = [...prices].sort((a, b) => a - b);
-                expect(prices).to.deep.equal(
-                    sortedAsc,
-                    "Product prices should be sorted low to high",
-                );
-            });
+            await step(
+                "get all products data and verify sort order",
+                async () => {
+                    const products =
+                        await dashboardPageData.getAllProductsData();
+                    const prices = products.map((p) => p.price);
+                    const sortedAsc = [...prices].sort((a, b) => a - b);
+                    expect(prices).to.deep.equal(
+                        sortedAsc,
+                        "Product prices should be sorted low to high",
+                    );
+                },
+            );
         }
 
         if (sortType === "high to low") {
@@ -82,20 +99,29 @@ export const sortProducts = async (
                 );
             });
 
-            await step("get all products data and verify sort order", async () => {
-                const products = await dashboardPageData.getAllProductsData();
-                const prices = products.map((p) => p.price);
-                const sortedDesc = [...prices].sort((a, b) => b - a);
-                expect(prices).to.deep.equal(
-                    sortedDesc,
-                    "Product prices should be sorted high to low",
-                );
-            });
+            await step(
+                "get all products data and verify sort order",
+                async () => {
+                    const products =
+                        await dashboardPageData.getAllProductsData();
+                    const prices = products.map((p) => p.price);
+                    const sortedDesc = [...prices].sort((a, b) => b - a);
+                    expect(prices).to.deep.equal(
+                        sortedDesc,
+                        "Product prices should be sorted high to low",
+                    );
+                },
+            );
         }
 
         console.log(`✅ completed filter products by ${sortType} test`);
     } catch (error) {
         console.error(`❌ filter products by ${sortType} test failed:`, error);
+
+        if (driver) {
+            await attachScreenshotOnFailure(driver, "failed sort product");
+        }
+
         throw error;
     } finally {
         if (driver) await driver.quit();

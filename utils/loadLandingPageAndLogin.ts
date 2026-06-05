@@ -7,6 +7,7 @@ import { WebDriver, Builder } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
 
 import { step } from "allure-js-commons";
+import { attachScreenshotOnFailure } from "./allure/attachScreenShotOnFailure.helper";
 
 export const loadLandingPageAndLogin = async (
     testType:
@@ -146,6 +147,14 @@ export const loadLandingPageAndLogin = async (
         }
     } catch (error) {
         console.error(`❌ ${testType} test failed:`, error);
+
+        if (driver) {
+            await attachScreenshotOnFailure(
+                driver,
+                `failed login test for ${testType === "happy path" ? "happy path" : testType === "negative path" ? "negative path" : testType === "no username" ? "no username" : testType === "protected route access without login" ? "protected route access without login" : ""}`,
+            );
+        }
+
         throw error;
     } finally {
         if (driver) await driver.quit();

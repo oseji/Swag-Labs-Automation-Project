@@ -5,6 +5,8 @@ import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
 import { step } from "allure-js-commons";
+import { setAllureLabels } from "../../../utils/allure/setAllureLabels.helper";
+import { attachScreenshotOnFailure } from "../../../utils/allure/attachScreenShotOnFailure.helper";
 
 describe("Menu visibility and content validation", () => {
     let driver: WebDriver | undefined;
@@ -15,6 +17,14 @@ describe("Menu visibility and content validation", () => {
     });
 
     it("should verify that the side menu opens and displays all expected menu items", async () => {
+        await setAllureLabels({
+            severity: "normal",
+            tag: "regression",
+            epic: "navigation",
+            feature: "menu",
+            story: "User opens menu",
+        });
+
         try {
             await step("launch browser and log in", async () => {
                 driver = await createDriverAndLogin(
@@ -23,11 +33,17 @@ describe("Menu visibility and content validation", () => {
                 );
             });
 
-            const navigationBarPageData = new NavigationBarPage(driver!, timeout);
+            const navigationBarPageData = new NavigationBarPage(
+                driver!,
+                timeout,
+            );
 
-            await step("open side menu and verify all menu items are visible", async () => {
-                await navigationBarPageData.openMenuAndVerifyContent();
-            });
+            await step(
+                "open side menu and verify all menu items are visible",
+                async () => {
+                    await navigationBarPageData.openMenuAndVerifyContent();
+                },
+            );
 
             await step("verify current url is the dashboard", async () => {
                 expect(await driver!.getCurrentUrl()).to.equal(
@@ -36,7 +52,18 @@ describe("Menu visibility and content validation", () => {
                 );
             });
         } catch (error) {
-            console.error("❌ Menu visibility and content validation failed:", error);
+            console.error(
+                "❌ Menu visibility and content validation failed:",
+                error,
+            );
+
+            if (driver) {
+                await attachScreenshotOnFailure(
+                    driver,
+                    "failed menu visibility and content validation",
+                );
+            }
+
             throw error;
         }
     });
