@@ -69,8 +69,12 @@ SwagLabs automation/
 ├── types/
 │   └── products.ts           # Shared PRODUCTS list and ProductName type
 ├── utils/                    # Shared helpers and setup
+│   ├── allure/
+│   │   ├── attachScreenShotOnFailure.helper.ts # Screenshot -> Allure attachment
+│   │   └── setAllureLabels.helper.ts          # severity/epic/feature/story labels
 │   ├── driverFactory.ts      # Builds Chrome, tracks drivers for cleanup
-│   ├── rootHooks.ts          # Failure screenshots and driver teardown
+│   ├── rootHooks.ts          # Quits every driver after each test
+│   ├── uiTest.ts             # it() wrapper that screenshots on failure
 │   ├── createDriverAndLogin.ts   # Start Chrome, log in, return driver
 │   ├── loadLandingPageAndLogin.ts # Login flows for auth tests
 │   ├── sortProducts.ts       # Reusable product-sorting test logic
@@ -78,6 +82,8 @@ SwagLabs automation/
 │   └── clickOnAMenuButton.ts
 ├── .env                      # URLs, credentials, timeout (not committed)
 ├── .env.example              # Template for the .env file above
+├── .mocharc.js               # Mocha config: ts-node, dotenv, root hooks
+├── .prettierrc
 ├── eslint.config.mjs
 ├── package.json
 ├── tsconfig.json
@@ -88,7 +94,7 @@ SwagLabs automation/
 
 ## Prerequisites
 
-- **Node.js** (v16 or higher recommended)
+- **Node.js** (v20 or higher — required by the ESLint version used here)
 - **Chrome** browser installed (Selenium uses it for automation)
 - **npm** (comes with Node.js)
 - **Allure CLI** — required to generate and open HTML reports (see [Allure Reports](#allure-reports))
@@ -179,6 +185,7 @@ This runs, in order: auth → products (details + sort) → cart → menu.
 | `npm run test:auth:logout`          | Logout and session persistence                                              |
 | `npm run test:auth:protected-route` | Accessing dashboard without login                                           |
 | `npm run test:products`             | Product details + all sort tests                                            |
+| `npm run test:products:details`     | Product details page test only                                              |
 | `npm run test:sort`                 | All sorting tests (A–Z, Z–A, price low–high, high–low)                      |
 | `npm run test:sort:az`              | Sort A–Z only                                                               |
 | `npm run test:sort:za`              | Sort Z–A only                                                               |
@@ -300,7 +307,8 @@ This keeps tests readable and reduces duplication when the UI changes.
 ### Utilities
 
 - **`driverFactory`** — Single place where Chrome is built. Applies the shared options (incognito, no password manager, eager page load), turns on headless when `HEADLESS=true`, and tracks every driver it hands out so teardown can find them.
-- **`rootHooks`** — Mocha root hooks that run after every test: attaches a screenshot to Allure if the test failed, then quits any driver the factory created. Tests therefore contain no `try`/`catch` and no `after` hooks of their own.
+- **`rootHooks`** — A Mocha root `afterEach` that quits every driver the factory handed out, so no test needs its own `after` hook.
+- **`uiTest`** — A thin wrapper around Mocha's `it()` used by every test. On failure it attaches a screenshot of the browser to Allure and rethrows, which keeps `try`/`catch` out of the test files. The capture lives here rather than in the root hook because Allure cannot resolve an attachment context from a hook, and would drop the screenshot silently.
 - **`createDriverAndLogin`** — Builds a Chrome WebDriver, logs in with given credentials, waits for dashboard, and returns the driver for tests that need a logged-in session (e.g. cart, checkout, menu).
 - **`loadLandingPageAndLogin`** — Handles different login scenarios (happy path, wrong credentials, blank username, protected route); used by authentication tests.
 - **`webElementHelpers`** — Shared `waitAndClick`, `waitAndInput`, and `waitForElement`. Each waits for the element to be **located, visible, and enabled** before acting, which is what allows the suite to run without any fixed `sleep()` calls.
@@ -311,7 +319,7 @@ This keeps tests readable and reduces duplication when the UI changes.
 
 Every test uses the **`step()`** function from `allure-js-commons` to annotate meaningful phases of each test (e.g. “launch browser and log in”, “verify cart badge count”). Mocha is configured in `.mocharc.js` to use `allure-mocha` as its reporter, which writes raw result files to `allure-results/` after each run. The `report:*` npm scripts then call the Allure CLI to convert those results into a navigable HTML report.
 
-When a test fails, the root `afterEach` hook calls `attachScreenshotOnFailure` (`utils/allure/attachScreenShotOnFailure.helper.ts`), which takes a screenshot via the WebDriver and attaches it as a PNG to the Allure report. This means every failure in the report includes a visual snapshot of the browser at the moment the error occurred. Labels (severity, tag, epic, feature, story) are applied per test via `setAllureLabels` (`utils/allure/setAllureLabels.helper.ts`) so reports can be filtered and grouped meaningfully.
+When a test fails, the `uiTest` wrapper (`utils/uiTest.ts`) calls `attachScreenshotOnFailure` (`utils/allure/attachScreenShotOnFailure.helper.ts`), which takes a screenshot via the WebDriver and attaches it as a PNG to the Allure report. This means every failure in the report includes a visual snapshot of the browser at the moment the error occurred. Labels (severity, tag, epic, feature, story) are applied per test via `setAllureLabels` (`utils/allure/setAllureLabels.helper.ts`) so reports can be filtered and grouped meaningfully.
 
 ### Driver and browser
 
