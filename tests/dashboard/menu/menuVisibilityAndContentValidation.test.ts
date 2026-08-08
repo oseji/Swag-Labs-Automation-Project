@@ -1,6 +1,7 @@
 /*verifies that the side menu opens and displays the expected menu items and content.*/
 import { expect } from "chai";
-import { describe, it } from "mocha";
+import { describe } from "mocha";
+import { uiTest } from "../../../utils/uiTest";
 import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
@@ -11,36 +12,42 @@ describe("Menu visibility and content validation", () => {
     let driver: WebDriver | undefined;
     const timeout = parseInt(process.env.TIMEOUT! || "20000");
 
-    it("should verify that the side menu opens and displays all expected menu items", async () => {
-        await setAllureLabels({
-            severity: "normal",
-            tag: "regression",
-            epic: "navigation",
-            feature: "menu",
-            story: "User opens menu",
-        });
+    uiTest(
+        "should verify that the side menu opens and displays all expected menu items",
+        async () => {
+            await setAllureLabels({
+                severity: "normal",
+                tag: "regression",
+                epic: "navigation",
+                feature: "menu",
+                story: "User opens menu",
+            });
 
-        await step("launch browser and log in", async () => {
-            driver = await createDriverAndLogin(
-                process.env.USER_NAME!,
-                process.env.PASSWORD!,
+            await step("launch browser and log in", async () => {
+                driver = await createDriverAndLogin(
+                    process.env.USER_NAME!,
+                    process.env.PASSWORD!,
+                );
+            });
+
+            const navigationBarPageData = new NavigationBarPage(
+                driver!,
+                timeout,
             );
-        });
 
-        const navigationBarPageData = new NavigationBarPage(driver!, timeout);
-
-        await step(
-            "open side menu and verify all menu items are visible",
-            async () => {
-                await navigationBarPageData.openMenuAndVerifyContent();
-            },
-        );
-
-        await step("verify current url is the dashboard", async () => {
-            expect(await driver!.getCurrentUrl()).to.equal(
-                process.env.DASHBOARD_URL,
-                "Menu test should start from dashboard",
+            await step(
+                "open side menu and verify all menu items are visible",
+                async () => {
+                    await navigationBarPageData.openMenuAndVerifyContent();
+                },
             );
-        });
-    });
+
+            await step("verify current url is the dashboard", async () => {
+                expect(await driver!.getCurrentUrl()).to.equal(
+                    process.env.DASHBOARD_URL,
+                    "Menu test should start from dashboard",
+                );
+            });
+        },
+    );
 });
