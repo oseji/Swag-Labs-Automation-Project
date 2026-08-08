@@ -1,12 +1,7 @@
 import { label, tag } from "allure-js-commons";
 
 type Severity =
-    | "blocker"
-    | "critical"
-    | "high"
-    | "normal"
-    | "minor"
-    | "trivial";
+    "blocker" | "critical" | "high" | "normal" | "minor" | "trivial";
 
 type AllureLabels = {
     severity?: Severity;

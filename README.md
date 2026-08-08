@@ -98,9 +98,9 @@ ChromeDriver is fetched automatically by Selenium; no separate install is requir
 
 2. **Install dependencies:**
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 3. **Create environment file:**  
    Copy the required variables into a `.env` file in the project root (see [Configuration](#configuration)). The `.env` file is gitignored.
@@ -111,21 +111,21 @@ ChromeDriver is fetched automatically by Selenium; no separate install is requir
 
 Create a `.env` file in the project root with at least:
 
-| Variable                | Description                          | Example                                             |
-| ----------------------- | ------------------------------------ | --------------------------------------------------- |
-| `LANDING_PAGE_URL`      | Login page URL                       | `https://www.saucedemo.com/`                        |
-| `DASHBOARD_URL`         | URL after successful login           | `https://www.saucedemo.com/inventory.html`          |
-| `CART_URL`              | Cart page URL                        | `https://www.saucedemo.com/cart.html`               |
-| `CHECKOUT_STEP_ONE_URL` | Checkout step one URL                | `https://www.saucedemo.com/checkout-step-one.html`  |
-| `CHECKOUT_STEP_TWO_URL` | Checkout step two URL                | `https://www.saucedemo.com/checkout-step-two.html`  |
-| `CHECKOUT_COMPLETE_URL` | Checkout complete page URL           | `https://www.saucedemo.com/checkout-complete.html`  |
-| `ABOUT_PAGE_URL`        | Sauce Labs about page URL            | `https://saucelabs.com/`                            |
-| `TIMEOUT`               | Default wait timeout (ms)            | `20000`                                             |
-| `USER_NAME`             | Valid Swag Labs username             | `standard_user`                                     |
-| `PASSWORD`              | Valid Swag Labs password             | `secret_sauce`                                      |
-| `CHECKOUT_FIRST_NAME`   | First name used in checkout form     | `ose`                                               |
-| `CHECKOUT_LAST_NAME`    | Last name used in checkout form      | `oziegbe`                                           |
-| `CHECKOUT_POSTAL_CODE`  | Postal code used in checkout form    | `0701995`                                           |
+| Variable                | Description                       | Example                                            |
+| ----------------------- | --------------------------------- | -------------------------------------------------- |
+| `LANDING_PAGE_URL`      | Login page URL                    | `https://www.saucedemo.com/`                       |
+| `DASHBOARD_URL`         | URL after successful login        | `https://www.saucedemo.com/inventory.html`         |
+| `CART_URL`              | Cart page URL                     | `https://www.saucedemo.com/cart.html`              |
+| `CHECKOUT_STEP_ONE_URL` | Checkout step one URL             | `https://www.saucedemo.com/checkout-step-one.html` |
+| `CHECKOUT_STEP_TWO_URL` | Checkout step two URL             | `https://www.saucedemo.com/checkout-step-two.html` |
+| `CHECKOUT_COMPLETE_URL` | Checkout complete page URL        | `https://www.saucedemo.com/checkout-complete.html` |
+| `ABOUT_PAGE_URL`        | Sauce Labs about page URL         | `https://saucelabs.com/`                           |
+| `TIMEOUT`               | Default wait timeout (ms)         | `20000`                                            |
+| `USER_NAME`             | Valid Swag Labs username          | `standard_user`                                    |
+| `PASSWORD`              | Valid Swag Labs password          | `secret_sauce`                                     |
+| `CHECKOUT_FIRST_NAME`   | First name used in checkout form  | `ose`                                              |
+| `CHECKOUT_LAST_NAME`    | Last name used in checkout form   | `oziegbe`                                          |
+| `CHECKOUT_POSTAL_CODE`  | Postal code used in checkout form | `0701995`                                          |
 
 Example `.env`:
 
@@ -220,16 +220,17 @@ npm install -g allure-commandline
 
 Use the `report:*` scripts to run a test suite, generate the report, and open it in one command:
 
-| Command                  | Runs and reports on                     |
-| ------------------------ | --------------------------------------- |
-| `npm run report:auth`    | All authentication tests                |
-| `npm run report:cart`    | All cart & checkout tests               |
-| `npm run report:sort`    | All product sorting tests               |
-| `npm run report:products`| Product details + all sorting tests     |
-| `npm run report:menu`    | All menu tests                          |
-| `npm run report:all`     | The full test suite                     |
+| Command                   | Runs and reports on                 |
+| ------------------------- | ----------------------------------- |
+| `npm run report:auth`     | All authentication tests            |
+| `npm run report:cart`     | All cart & checkout tests           |
+| `npm run report:sort`     | All product sorting tests           |
+| `npm run report:products` | Product details + all sorting tests |
+| `npm run report:menu`     | All menu tests                      |
+| `npm run report:all`      | The full test suite                 |
 
 Each script:
+
 1. Clears any previous `allure-results` and `allure-report` directories
 2. Runs the relevant tests (results are written to `allure-results/`)
 3. Generates a static HTML report in `allure-report/`
