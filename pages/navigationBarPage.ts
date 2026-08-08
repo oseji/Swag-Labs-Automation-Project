@@ -14,6 +14,7 @@ export class NavigationBarPage {
 	locators = {
 		cartButton: By.css('[data-test="shopping-cart-link"]'),
 		cartBadge: By.css('[data-test="shopping-cart-badge"]'),
+		menuWrapper: By.css(".bm-menu-wrap"),
 		menuButton: By.id("react-burger-menu-btn"),
 		closeMenuButton: By.id("react-burger-cross-btn"),
 		allItemsButton: By.id("inventory_sidebar_link"),
@@ -22,9 +23,22 @@ export class NavigationBarPage {
 		resetAppStateButton: By.id("reset_sidebar_link"),
 	};
 
-	async openCart(): Promise<void> {
-		await this.driver.sleep(1000);
+	private async waitForSideMenuState(shouldBeOpen: boolean): Promise<void> {
+		await this.driver.wait(
+			async () => {
+				const wrapper = await this.driver.findElement(
+					this.locators.menuWrapper,
+				);
+				const isHidden = await wrapper.getAttribute("aria-hidden");
 
+				return isHidden === (shouldBeOpen ? "false" : "true");
+			},
+			this.timeout,
+			`Side menu did not ${shouldBeOpen ? "open" : "close"} within ${this.timeout}ms`,
+		);
+	}
+
+	async openCart(): Promise<void> {
 		await waitAndClick(
 			this.driver,
 			this.locators.cartButton,
@@ -53,9 +67,9 @@ export class NavigationBarPage {
 		const badges = await this.driver.findElements(this.locators.cartBadge);
 
 		expect(
-			badges,
+			badges.length,
 			"Cart badge should not be displayed when the cart is empty",
-		).to.be.empty;
+		).to.equal(0);
 
 		console.log("Cart badge verified as not present");
 	}
@@ -63,17 +77,17 @@ export class NavigationBarPage {
 	async openSideMenu(): Promise<void> {
 		await waitAndClick(this.driver, this.locators.menuButton, "menu button");
 
-		await this.driver.sleep(1000);
+		await this.waitForSideMenuState(true);
 	}
 
 	async closeSideMenu(): Promise<void> {
-		await this.driver.sleep(1000);
-
 		await waitAndClick(
 			this.driver,
 			this.locators.closeMenuButton,
 			"close menu button",
 		);
+
+		await this.waitForSideMenuState(false);
 	}
 
 	async clickOnAllItemsMenuButton(): Promise<void> {

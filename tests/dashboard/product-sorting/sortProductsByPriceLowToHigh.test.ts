@@ -12,14 +12,6 @@ describe("Sort products by price low to high", () => {
             story: "User sorts product list from low to high price",
         });
 
-        try {
-            await sortProducts("low to high");
-        } catch (error) {
-            console.error(
-                "❌ Sort products by price low to high test failed:",
-                error,
-            );
-            throw error;
-        }
+        await sortProducts("low to high");
     });
 });

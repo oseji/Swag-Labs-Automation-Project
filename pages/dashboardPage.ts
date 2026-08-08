@@ -1,5 +1,6 @@
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
+import { ProductName } from "../types/products";
 
 export class DashboardPage {
 	private driver: WebDriver;
@@ -154,13 +155,7 @@ export class DashboardPage {
 	}
 
 	async clickOnProductToViewDetails(
-		product:
-			| "sauce labs backpack"
-			| "sauce labs bike light"
-			| "sauce labs bolt t-shirt"
-			| "sauce labs fleece jacket"
-			| "sauce labs onesie"
-			| "test all the things t-shirt red",
+		product: ProductName,
 	): Promise<void> {
 		const productLocator = this.productMapping[product];
 		await waitAndClick(this.driver, productLocator, `${product} product`);
@@ -182,27 +177,14 @@ export class DashboardPage {
 	}
 
 	async clickRemoveButtonOnProduct(
-		product:
-			| "sauce labs backpack"
-			| "sauce labs bike light"
-			| "sauce labs bolt t-shirt"
-			| "sauce labs fleece jacket"
-			| "sauce labs onesie"
-			| "test all the things t-shirt red",
+		product: ProductName,
 	): Promise<void> {
 		const locator = By.id(`remove-${product}`);
 		await waitAndClick(this.driver, locator, ` remove button for ${product}`);
 	}
 
 	async clickAddToCartButtonOnProduct(
-		products: Array<
-			| "sauce labs backpack"
-			| "sauce labs bike light"
-			| "sauce labs bolt t-shirt"
-			| "sauce labs fleece jacket"
-			| "sauce labs onesie"
-			| "test all the things t-shirt red"
-		>,
+		products: ProductName[],
 	): Promise<void> {
 		for (const product of products) {
 			const formattedProduct = this.formatProductName(product);
@@ -213,21 +195,19 @@ export class DashboardPage {
 				locator,
 				` add to cart button for ${product}`,
 			);
+
+			await waitForElement(
+				this.driver,
+				By.id(`remove-${formattedProduct}`),
+				`remove button for ${product} after adding to cart`,
+			);
+
 			console.log(`added ${product} to cart`);
-			await this.driver.sleep(500);
 		}
-		await this.driver.sleep(1000);
 	}
 
 	async clickRemoveFromCartButtonOnProduct(
-		products: Array<
-			| "sauce labs backpack"
-			| "sauce labs bike light"
-			| "sauce labs bolt t-shirt"
-			| "sauce labs fleece jacket"
-			| "sauce labs onesie"
-			| "test all the things t-shirt red"
-		>,
+		products: ProductName[],
 	): Promise<void> {
 		for (const product of products) {
 			const formattedProduct = this.formatProductName(product);
@@ -239,10 +219,14 @@ export class DashboardPage {
 				` remove from cart button for ${product}`,
 			);
 
+			await waitForElement(
+				this.driver,
+				By.id(`add-to-cart-${formattedProduct}`),
+				`add to cart button for ${product} after removing from cart`,
+			);
+
 			console.log(`removed ${product} from cart`);
-			await this.driver.sleep(500);
 		}
-		await this.driver.sleep(1000);
 	}
 
 	async clickToOpenSocialMedia(

@@ -19,8 +19,6 @@ export const createDriverAndLogin = async (
 
 		return driver;
 	} catch (error) {
-		if (driver) await driver.quit();
-
 		console.error(`❌ Script failed:`, error);
 		throw error;
 	}

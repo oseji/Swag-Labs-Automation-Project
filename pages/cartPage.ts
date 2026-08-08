@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
+import { ProductName } from "../types/products";
 
 export class CartPage {
 	private driver: WebDriver;
@@ -52,14 +53,7 @@ export class CartPage {
 	}
 
 	async verifyProductInCart(
-		productName: Array<
-			| "sauce labs backpack"
-			| "sauce labs bike light"
-			| "sauce labs bolt t-shirt"
-			| "sauce labs fleece jacket"
-			| "sauce labs onesie"
-			| "test all the things t-shirt red"
-		>,
+		productName: ProductName[],
 	): Promise<void> {
 		for (const product of productName) {
 			const locator = this.productNameToLocatorMap[product];

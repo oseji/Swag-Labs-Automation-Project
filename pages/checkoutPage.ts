@@ -6,6 +6,7 @@ import {
 	waitForElement,
 } from "../utils/webElementHelpers";
 import { CartPage } from "./cartPage";
+import { ProductName } from "../types/products";
 
 export class CheckoutPage {
 	private driver: WebDriver;
@@ -176,8 +177,13 @@ export class CheckoutPage {
 	}
 
 	async calculateAndVerifyPricesDisplayed(): Promise<void> {
-		const getPriceValue = async (locator: any) => {
-			const text = await this.driver.findElement(locator).getText();
+		const getPriceValue = async (locator: By) => {
+			const element = await waitForElement(
+				this.driver,
+				locator,
+				"price label",
+			);
+			const text = await element.getText();
 			return parseFloat(text.replace(/[^0-9.]/g, ""));
 		};
 
@@ -282,14 +288,7 @@ export class CheckoutPage {
 	}
 
 	async checkoutStepTwo(
-		productName: Array<
-			| "sauce labs backpack"
-			| "sauce labs bike light"
-			| "sauce labs bolt t-shirt"
-			| "sauce labs fleece jacket"
-			| "sauce labs onesie"
-			| "test all the things t-shirt red"
-		>,
+		productName: ProductName[],
 	): Promise<void> {
 		await this.waitForCheckoutStepTwoToLoad();
 		await this.cartPageData.verifyProductInCart(productName);

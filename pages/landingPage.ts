@@ -70,7 +70,6 @@ export class LandingPage {
 			"no username error message",
 		);
 
-		await this.driver.sleep(2000);
 	}
 
 	async waitForNegativePathErrorMessage(): Promise<void> {
@@ -80,7 +79,6 @@ export class LandingPage {
 			"negative path error message",
 		);
 
-		await this.driver.sleep(2000);
 	}
 
 	async waitForProtectedRouteErrorMessage(): Promise<void> {
@@ -90,7 +88,6 @@ export class LandingPage {
 			"protected route error message",
 		);
 
-		await this.driver.sleep(2000);
 	}
 
 	async waitForDashboardToLoad(): Promise<void> {

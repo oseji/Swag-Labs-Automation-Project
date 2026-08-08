@@ -12,11 +12,6 @@ describe("Sort products alphabetically Z to A", () => {
             story: "User sorts product list from z-a",
         });
 
-        try {
-            await sortProducts("z to a");
-        } catch (error) {
-            console.error("❌ Sort products Z to A test failed:", error);
-            throw error;
-        }
+        await sortProducts("z to a");
     });
 });

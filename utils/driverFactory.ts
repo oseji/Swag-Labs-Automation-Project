@@ -1,6 +1,8 @@
 import { WebDriver, Builder } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
 
+const activeDrivers = new Set<WebDriver>();
+
 export const buildDriver = async (): Promise<WebDriver> => {
 	const chromeOptions = new Options();
 
@@ -22,8 +24,26 @@ export const buildDriver = async (): Promise<WebDriver> => {
 		);
 	}
 
-	return new Builder()
+	const driver = await new Builder()
 		.forBrowser("chrome")
 		.setChromeOptions(chromeOptions)
 		.build();
+
+	activeDrivers.add(driver);
+
+	return driver;
+};
+
+export const getActiveDrivers = (): WebDriver[] => [...activeDrivers];
+
+export const quitActiveDrivers = async (): Promise<void> => {
+	for (const driver of activeDrivers) {
+		try {
+			await driver.quit();
+		} catch {
+			//session may already be gone, nothing left to clean up
+		}
+	}
+
+	activeDrivers.clear();
 };

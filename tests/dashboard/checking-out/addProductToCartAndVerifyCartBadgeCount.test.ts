@@ -3,31 +3,18 @@ import { createDriverAndLogin } from "../../../utils/createDriverAndLogin";
 import { DashboardPage } from "../../../pages/dashboardPage";
 import { NavigationBarPage } from "../../../pages/navigationBarPage";
 import { WebDriver } from "selenium-webdriver";
-import { describe, it, after } from "mocha";
+import { describe, it } from "mocha";
 import { step } from "allure-js-commons";
 import { setAllureLabels } from "../../../utils/allure/setAllureLabels.helper";
-import { attachScreenshotOnFailure } from "../../../utils/allure/attachScreenShotOnFailure.helper";
+import { PRODUCTS } from "../../../types/products";
 
 describe("Add product to cart and verify cart badge count", () => {
     let driver: WebDriver | undefined;
-    const timeout = parseInt(process.env.TIMEOUT!);
+    const timeout = parseInt(process.env.TIMEOUT! || "20000");
 
-    const products = [
-        "sauce labs backpack",
-        "sauce labs bike light",
-        "sauce labs bolt t-shirt",
-        "sauce labs fleece jacket",
-        "sauce labs onesie",
-        "test all the things t-shirt red",
-    ] as const;
-
-    const randomProducts = [...products]
+    const randomProducts = [...PRODUCTS]
         .sort(() => 0.5 - Math.random())
         .slice(0, 3);
-
-    after("Quit browser", async () => {
-        if (driver) await driver.quit();
-    });
 
     it("should verify that adding random products to the cart updates the cart badge count to match the number of items added", async () => {
         await setAllureLabels({
@@ -38,42 +25,26 @@ describe("Add product to cart and verify cart badge count", () => {
             story: "User adds products to cart",
         });
 
-        try {
-            await step("Launch browser and log in", async () => {
-                driver = await createDriverAndLogin(
-                    process.env.USER_NAME!,
-                    process.env.PASSWORD!,
-                );
-            });
-
-            const dashboardPageData = new DashboardPage(driver!, timeout);
-            const navigationPageData = new NavigationBarPage(driver!, timeout);
-
-            await step("add random products to cart", async () => {
-                await dashboardPageData.clickAddToCartButtonOnProduct(
-                    randomProducts,
-                );
-            });
-
-            await step("verify cart badge count", async () => {
-                await navigationPageData.verifyCartBadgeCount(
-                    randomProducts.length,
-                );
-            });
-        } catch (error) {
-            console.error(
-                "❌ Add product to cart and verify cart badge count test failed:",
-                error,
+        await step("Launch browser and log in", async () => {
+            driver = await createDriverAndLogin(
+                process.env.USER_NAME!,
+                process.env.PASSWORD!,
             );
+        });
 
-            if (driver) {
-                await attachScreenshotOnFailure(
-                    driver,
-                    "failed add product to cart and verify badge count",
-                );
-            }
+        const dashboardPageData = new DashboardPage(driver!, timeout);
+        const navigationPageData = new NavigationBarPage(driver!, timeout);
 
-            throw error;
-        }
+        await step("add random products to cart", async () => {
+            await dashboardPageData.clickAddToCartButtonOnProduct(
+                randomProducts,
+            );
+        });
+
+        await step("verify cart badge count", async () => {
+            await navigationPageData.verifyCartBadgeCount(
+                randomProducts.length,
+            );
+        });
     });
 });
