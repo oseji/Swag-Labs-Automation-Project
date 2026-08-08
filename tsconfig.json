@@ -17,6 +17,6 @@
 			"module": "commonjs"
 		}
 	},
-	"include": ["tests/**/*", "utils/loadLandingPageAndLogin.ts"],
+	"include": ["tests/**/*", "pages/**/*", "utils/**/*"],
 	"exclude": ["node_modules"]
 }

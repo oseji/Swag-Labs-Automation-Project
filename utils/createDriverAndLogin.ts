@@ -1,28 +1,16 @@
-import { WebDriver, Builder } from "selenium-webdriver";
-require("dotenv").config();
-import { Options } from "selenium-webdriver/chrome";
+import { WebDriver } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
+import { buildDriver } from "./driverFactory";
 
 export const createDriverAndLogin = async (
 	username: string,
 	password: string,
-) => {
+): Promise<WebDriver> => {
 	let driver: WebDriver | undefined;
 	const timeout = parseInt(process.env.TIMEOUT! || "20000");
-	const chromeOptions = new Options();
-
-	chromeOptions.setUserPreferences({
-		credentials_enable_service: false,
-		"profile.password_manager_enabled": false,
-	});
-
-	chromeOptions.addArguments("--incognito");
 
 	try {
-		driver = await new Builder()
-			.forBrowser("chrome")
-			.setChromeOptions(chromeOptions)
-			.build();
+		driver = await buildDriver();
 
 		const landingPageData = new LandingPage(driver, timeout);
 
@@ -31,6 +19,8 @@ export const createDriverAndLogin = async (
 
 		return driver;
 	} catch (error) {
+		if (driver) await driver.quit();
+
 		console.error(`❌ Script failed:`, error);
 		throw error;
 	}

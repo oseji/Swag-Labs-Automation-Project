@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "E2E UI automation suite for Swag Labs (saucedemo.com)",
     "scripts": {
+        "typecheck": "tsc --noEmit",
         "test": "npm run test:all",
         "test:all": "mocha 'tests/**/*.test.ts'",
         "test:auth": "mocha 'tests/authentication/**/*.test.ts'",

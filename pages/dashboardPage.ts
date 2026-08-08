@@ -1,16 +1,13 @@
 import { WebDriver, By, until } from "selenium-webdriver";
 import { waitAndClick, waitForElement } from "../utils/webElementHelpers";
-import { LandingPage } from "./landingPage";
 
 export class DashboardPage {
 	private driver: WebDriver;
 	private timeout: number;
-	private loadLandingPageAndLogin: LandingPage;
 
 	constructor(driver: WebDriver, timeout: number) {
 		this.driver = driver;
 		this.timeout = timeout;
-		this.loadLandingPageAndLogin = new LandingPage(this.driver, this.timeout);
 	}
 
 	dashboardLocators = {

@@ -73,7 +73,7 @@ describe("Reset app state from menu", () => {
             });
 
             await step("verify cart badge is cleared", async () => {
-                await navigationPageData.verifyCartBadgeCount(0);
+                await navigationPageData.verifyCartBadgeNotPresent();
             });
         } catch (error) {
             console.error(

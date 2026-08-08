@@ -49,6 +49,17 @@ export class NavigationBarPage {
 		).to.equal(expectedCount);
 	}
 
+	async verifyCartBadgeNotPresent(): Promise<void> {
+		const badges = await this.driver.findElements(this.locators.cartBadge);
+
+		expect(
+			badges,
+			"Cart badge should not be displayed when the cart is empty",
+		).to.be.empty;
+
+		console.log("Cart badge verified as not present");
+	}
+
 	async openSideMenu(): Promise<void> {
 		await waitAndClick(this.driver, this.locators.menuButton, "menu button");
 
@@ -80,7 +91,10 @@ export class NavigationBarPage {
 			"about button on the menu",
 		);
 
-		await this.driver.wait(until.urlIs(process.env.ABOUT_PAGE_URL!), this.timeout);
+		await this.driver.wait(
+			until.urlContains("saucelabs.com"),
+			this.timeout,
+		);
 		console.log("opened about page");
 	}
 

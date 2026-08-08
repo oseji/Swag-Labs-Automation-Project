@@ -1,10 +1,8 @@
-import dotenv from "dotenv";
-dotenv.config();
 import { expect } from "chai";
-import { Options } from "selenium-webdriver/chrome";
 
-import { WebDriver, Builder } from "selenium-webdriver";
+import { WebDriver } from "selenium-webdriver";
 import { LandingPage } from "../pages/landingPage";
+import { buildDriver } from "./driverFactory";
 
 import { step } from "allure-js-commons";
 import { attachScreenshotOnFailure } from "./allure/attachScreenShotOnFailure.helper";
@@ -20,19 +18,10 @@ export const loadLandingPageAndLogin = async (
 ) => {
     let driver: WebDriver | undefined;
     const timeout = parseInt(process.env.TIMEOUT! || "20000");
-    const chromeOptions = new Options();
-
-    chromeOptions.setUserPreferences({
-        credentials_enable_service: false,
-        "profile.password_manager_enabled": false,
-    });
 
     try {
         await step("launch chrome browser", async () => {
-            driver = await new Builder()
-                .forBrowser("chrome")
-                .setChromeOptions(chromeOptions)
-                .build();
+            driver = await buildDriver();
         });
 
         const landingPageData = new LandingPage(driver!, timeout);
@@ -151,7 +140,7 @@ export const loadLandingPageAndLogin = async (
         if (driver) {
             await attachScreenshotOnFailure(
                 driver,
-                `failed login test for ${testType === "happy path" ? "happy path" : testType === "negative path" ? "negative path" : testType === "no username" ? "no username" : testType === "protected route access without login" ? "protected route access without login" : ""}`,
+                `failed login test for ${testType}`,
             );
         }
 

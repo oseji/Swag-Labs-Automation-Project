@@ -96,7 +96,7 @@ export const clickOnAMenuButton = async (
         if (driver) {
             await attachScreenshotOnFailure(
                 driver,
-                `failed menu button test: ${buttonName === "about" ? "about" : buttonName === "reset app state" ? "reset app state" : buttonName === "logout" ? "logout" : ""}`,
+                `failed menu button test: ${buttonName}`,
             );
         }
 
