@@ -59,21 +59,26 @@ SwagLabs automation/
 │   ├── dashboardPage.ts      # Product grid, add to cart, filters
 │   ├── navigationBarPage.ts  # Cart icon, menu, badge count
 │   ├── cartPage.ts           # Cart items, checkout button
-│   ├── checkoutPage.ts       # Checkout steps (info, review, finish)
-│   └── itemDetailsPage.ts    # Product detail view
+│   └── checkoutPage.ts       # Checkout steps (info, review, finish)
 ├── tests/
 │   ├── authentication/       # Login, logout, protected routes
 │   ├── dashboard/
 │   │   ├── checking-out/     # Cart add/remove, checkout flow
 │   │   ├── menu/             # Menu visibility, reset, About link
 │   │   └── product-sorting/  # Sort order and product details
+├── types/
+│   └── products.ts           # Shared PRODUCTS list and ProductName type
 ├── utils/                    # Shared helpers and setup
+│   ├── driverFactory.ts      # Builds Chrome, tracks drivers for cleanup
+│   ├── rootHooks.ts          # Failure screenshots and driver teardown
 │   ├── createDriverAndLogin.ts   # Start Chrome, log in, return driver
-│   ├── loadLandingPageAndLogin.ts # Login flows for auth tests (then quit)
+│   ├── loadLandingPageAndLogin.ts # Login flows for auth tests
 │   ├── sortProducts.ts       # Reusable product-sorting test logic
 │   ├── webElementHelpers.ts # waitAndClick, waitAndInput, waitForElement
 │   └── clickOnAMenuButton.ts
 ├── .env                      # URLs, credentials, timeout (not committed)
+├── .env.example              # Template for the .env file above
+├── eslint.config.mjs
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -188,6 +193,16 @@ This runs, in order: auth → products (details + sort) → cart → menu.
 | `npm run test:menu:reset`           | Reset app state only                                                        |
 | `npm run test:menu:about`           | About page navigation only                                                  |
 
+### Code quality
+
+| Command                | What it does                             |
+| ---------------------- | ---------------------------------------- |
+| `npm run typecheck`    | Type-check the project without emitting  |
+| `npm run lint`         | Run ESLint over the repo                 |
+| `npm run lint:fix`     | Run ESLint and apply fixable changes     |
+| `npm run format`       | Format the repo with Prettier            |
+| `npm run format:check` | Check formatting without writing changes |
+
 ### Run a single test file
 
 Run a single test using the npm scripts defined in `package.json`. For example, to run the valid-login authentication test:
@@ -284,9 +299,11 @@ This keeps tests readable and reduces duplication when the UI changes.
 
 ### Utilities
 
+- **`driverFactory`** — Single place where Chrome is built. Applies the shared options (incognito, no password manager, eager page load), turns on headless when `HEADLESS=true`, and tracks every driver it hands out so teardown can find them.
+- **`rootHooks`** — Mocha root hooks that run after every test: attaches a screenshot to Allure if the test failed, then quits any driver the factory created. Tests therefore contain no `try`/`catch` and no `after` hooks of their own.
 - **`createDriverAndLogin`** — Builds a Chrome WebDriver, logs in with given credentials, waits for dashboard, and returns the driver for tests that need a logged-in session (e.g. cart, checkout, menu).
-- **`loadLandingPageAndLogin`** — Handles different login scenarios (happy path, wrong credentials, blank username, protected route) and **quits the driver** when done; used by authentication tests.
-- **`webElementHelpers`** — Shared `waitAndClick`, `waitAndInput`, and `waitForElement` using the configured timeout for stable waits.
+- **`loadLandingPageAndLogin`** — Handles different login scenarios (happy path, wrong credentials, blank username, protected route); used by authentication tests.
+- **`webElementHelpers`** — Shared `waitAndClick`, `waitAndInput`, and `waitForElement`. Each waits for the element to be **located, visible, and enabled** before acting, which is what allows the suite to run without any fixed `sleep()` calls.
 - **`sortProducts`** — Centralized logic for “sort and assert order” used by the product-sorting tests.
 - **`clickOnAMenuButton`** — Handles opening the side menu and clicking a named button (“about”, “logout”, “all items”, “reset app state”), including assertions specific to each action.
 
@@ -294,13 +311,19 @@ This keeps tests readable and reduces duplication when the UI changes.
 
 Every test uses the **`step()`** function from `allure-js-commons` to annotate meaningful phases of each test (e.g. “launch browser and log in”, “verify cart badge count”). Mocha is configured in `.mocharc.js` to use `allure-mocha` as its reporter, which writes raw result files to `allure-results/` after each run. The `report:*` npm scripts then call the Allure CLI to convert those results into a navigable HTML report.
 
-When a test fails, the catch block calls `attachScreenshotOnFailure` (`utils/allure/attachScreenShotOnFailure.helper.ts`), which takes a screenshot via the WebDriver and attaches it as a PNG to the Allure report. This means every failure in the report includes a visual snapshot of the browser at the moment the error occurred. Labels (severity, tag, epic, feature, story) are applied per test via `setAllureLabels` (`utils/allure/setAllureLabels.helper.ts`) so reports can be filtered and grouped meaningfully.
+When a test fails, the root `afterEach` hook calls `attachScreenshotOnFailure` (`utils/allure/attachScreenShotOnFailure.helper.ts`), which takes a screenshot via the WebDriver and attaches it as a PNG to the Allure report. This means every failure in the report includes a visual snapshot of the browser at the moment the error occurred. Labels (severity, tag, epic, feature, story) are applied per test via `setAllureLabels` (`utils/allure/setAllureLabels.helper.ts`) so reports can be filtered and grouped meaningfully.
 
 ### Driver and browser
 
-- Tests use **Chrome** with options that disable password manager and (where used) run in incognito for a clean state.
+- Tests use **Chrome** with options that disable password manager and run in incognito for a clean state.
 - Timeouts come from `TIMEOUT` in `.env` (default 20000 ms).
-- Each test (or helper) is responsible for calling `driver.quit()` when finished (e.g. in `finally` blocks).
+- Set `HEADLESS=true` to run without a visible browser window, which is noticeably faster:
+
+    ```bash
+    HEADLESS=true npm run test:all
+    ```
+
+- Driver teardown is handled centrally by the root hooks, so no test needs to call `driver.quit()` itself.
 
 ---
 
@@ -318,6 +341,7 @@ Summary of variables used:
 | `CHECKOUT_COMPLETE_URL` | Yes                  | Checkout complete page URL used for assertions        |
 | `ABOUT_PAGE_URL`        | Yes                  | Sauce Labs site URL used for About menu assertion     |
 | `TIMEOUT`               | No (default 20000)   | Global wait timeout in ms                             |
+| `HEADLESS`              | No (default false)   | Set to `true` to run Chrome without a window          |
 | `USER_NAME`             | Yes (for most tests) | Swag Labs username (e.g. `standard_user`)             |
 | `PASSWORD`              | Yes (for most tests) | Swag Labs password (e.g. `secret_sauce`)              |
 | `CHECKOUT_FIRST_NAME`   | Yes                  | First name entered in the checkout form               |
